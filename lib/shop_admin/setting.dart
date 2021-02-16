@@ -5,7 +5,7 @@ import 'package:kretaa/common_widgets/form_input.dart';
 import 'package:kretaa/model/gst.dart';
 import 'package:kretaa/model/setting_doc.dart';
 import 'package:kretaa/services/database.dart';
-import 'package:kretaa/shop_admin/setting_model.dart';
+import 'package:kretaa/shop_admin/setting_change_notifier_model.dart';
 import 'package:kretaa/shop_admin/shop_admin_home.dart';
 import 'package:kretaa/shop_admin/state/setting_model.dart';
 import 'package:kretaa/shop_admin/state/setting_state.dart';
@@ -13,18 +13,24 @@ import 'package:provider/provider.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 
 class Setting extends StatefulWidget {
-  final String documentId;
+  final SettingChangeNotifierModel model;
 
   @override
   _SettingState createState() => _SettingState();
-  Setting({this.documentId});
+  Setting({this.model});
   static Widget create(BuildContext context, String documentId) {
     final database = Provider.of<Database>(context, listen: false);
-    return StateNotifierProvider<SettingModels, SettingState>(
-        create: (_) => SettingModels(
+    return ChangeNotifierProvider<SettingChangeNotifierModel>(
+        create: (_) => SettingChangeNotifierModel(
               database: database,
             ),
-        child: Setting());
+        child: Consumer<SettingChangeNotifierModel>(
+          builder: (_, model, __) {
+            return Setting(
+              model: model,
+            );
+          },
+        ));
   }
 }
 
@@ -32,14 +38,17 @@ class _SettingState extends State<Setting> {
   // SettingModel model;
   TextEditingController _rewardPercentageController = TextEditingController();
   TextEditingController _defaultGstSettingController = TextEditingController();
+  SettingChangeNotifierModel model;
+  @override
+  void initState() {
+    model = widget.model;
+    _rewardPercentageController.text =
+        model.settingModel?.reward_percentage?.toString();
+    _defaultGstSettingController.text = model.settingModel?.default_gst_setting;
+    // initializeModel();
 
-  // @override
-  // void initState() {
-  //   // model = widget.model;
-  //   initializeModel();
-
-  //   super.initState();
-  // }
+    super.initState();
+  }
 
   // void submit() {
   //   final model = context.read<SettingModel>();
@@ -60,21 +69,10 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<SettingModels>();
-    final state = context.watch<SettingState>();
-    // final isLoading = state.state.;
-    // var data= state.state.when(data: (d)=>, dataLoading: null, error: null);
     final database = Provider.of<Database>(context, listen: false);
     // WidgetsBinding.instance.addPostFrameCallback((_) async {
     //   await model.setModel();
     // });
-    SettingModel data =
-        state.maybeWhen(data: (data) => data, orElse: () => SettingModel());
-    _rewardPercentageController.text = data.reward_percentage.toString();
-    bool loading =
-        state.maybeWhen(dataLoading: (loading) => loading, orElse: () => false);
-    _rewardPercentageController.text = data.reward_percentage.toString();
-    print('loading = $loading');
     return CustomCard(
       child: StreamBuilder<SettingModel>(
           stream: database.rewardSettingStream(
@@ -86,7 +84,6 @@ class _SettingState extends State<Setting> {
             //   _reward_percentage = snapshot.data?.reward_percentage.toString();
             //   _default_gst_tax = snapshot.data?.default_gst_tax;
             // });
-            if (loading) return Center(child: CircularProgressIndicator());
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -106,7 +103,7 @@ class _SettingState extends State<Setting> {
                     keyboardType: TextInputType.phone,
                     decoration: FormInput.inputDecoration(),
                     onChanged: (v) {
-                      model.updateRewardPoint(v);
+                      model.updateRewardPercentage(v);
                     },
                   ),
                 ),
@@ -124,13 +121,13 @@ class _SettingState extends State<Setting> {
                                 child: Text(e.key)))
                             .toList(),
                         onChanged: (v) async {
-                          await model.updateGST(v);
+                          model.updateGST(v);
                         },
-                        value: data.default_gst_setting),
+                        value: model.settingModel.default_gst_setting),
                   ],
                 ),
                 RaisedButton(
-                  onPressed: () => null,
+                  onPressed: () => submit(context),
                   color: Colors.greenAccent,
                   child: Text('Submit'),
                 ),
@@ -138,5 +135,13 @@ class _SettingState extends State<Setting> {
             );
           }),
     );
+  }
+
+  void submit(BuildContext context) {
+    model.submit();
+    var snackbar = SnackBar(
+      content: Text('Setting Update'),
+    );
+    Scaffold.of(context).showSnackBar(snackbar);
   }
 }
