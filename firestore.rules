@@ -1,0 +1,45 @@
+
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+      match /shops/{shop} {
+      allow read: if request.auth.uid!=null;
+      allow write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isGlobalAdmin==true;
+    }
+    
+       match /shops/{shop}/bills/{billId} {
+      allow read,write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isOwner==true
+      && get(/databases/$(database)/documents/users/$(request.auth.uid)).
+      data.shopDocumentId == request.path[4];
+      allow read: if resource.data.customerUID == request.auth.uid;
+    }
+         match /shops/{shop}/private/reward_setting {
+      allow read,write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isOwner==true
+      && get(/databases/$(database)/documents/users/$(request.auth.uid)).
+      data.shopDocumentId == request.path[4];
+    }
+    match /{path=**}/bills/{bill}{
+     allow read: if resource.data.customerUID == request.auth.uid;
+    }
+       match /shops/{shop}/customers/{customerUID} {
+      allow read: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isOwner==true
+      && get(/databases/$(database)/documents/users/$(request.auth.uid)).
+      data.shopDocumentId == request.path[4];
+    }
+      match /{path=**}/customers/{customerUID}{
+     allow read: if resource.data.customerUID == request.auth.uid;
+    }
+      match /users/{uid} {
+      allow read: if request.auth.uid!=null;
+      allow write: if request.auth.uid == uid 
+      && (request.resource.data.isOwner==resource.data.isOwner || request.resource.data.isOwner==null)
+      && (request.resource.data.isGlobalAdmin==resource.data.isGlobalAdmin || request.resource.data.isGlobalAdmin==null);
+    }
+    
+    
+    match /private/** {
+      allow read,write: if request.auth.token.isGlobalAdmin == true;
+    }
+  }
+}
