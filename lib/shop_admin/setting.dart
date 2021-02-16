@@ -23,7 +23,6 @@ class Setting extends StatefulWidget {
     return StateNotifierProvider<SettingModels, SettingState>(
         create: (_) => SettingModels(
               database: database,
-              documentId: documentId,
             ),
         child: Setting());
   }

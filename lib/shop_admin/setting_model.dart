@@ -6,11 +6,11 @@ import 'package:kretaa/shop_admin/state/setting_model.dart';
 import 'package:kretaa/shop_admin/state/setting_state.dart';
 import 'package:state_notifier/state_notifier.dart';
 
-class SettingModels extends ChangeNotifier {
+class SettingModels extends StateNotifier<SettingState> {
   final Database database;
   SettingModel settingModel;
 
-  SettingModels({this.settingModel, @required this.database}) {
+  SettingModels({this.settingModel, @required this.database}) : super(null) {
     init();
   }
 
