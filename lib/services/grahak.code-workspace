@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../time_tracker_flutter_course"
+		},
+		{
+			"path": "../../../firebase_user_avatar_flutter"
+		},
+		{
+			"path": "../../../layout-demo-flutter"
+		},
+		{
+			"path": "../../../slivers_demo_flutter"
+		}
+	]
+}
