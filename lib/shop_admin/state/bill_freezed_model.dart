@@ -8,21 +8,21 @@ part 'bill_freezed_model.g.dart';
 @freezed
 abstract class BillFreezedModel with _$BillFreezedModel {
   factory BillFreezedModel(
-      {String documentId,
-      String description,
-      List<ItemFreezedModel> item,
-      int id,
-      int rewardPointsGiven,
-      int redeemRewardPoints,
-      bool isProcessing,
-      String customerPhoneNumber,
-      double amount,
-      String updatedByUID,
-      String customerUID,
+      {String? documentId,
+      String? description,
+      List<ItemFreezedModel>? item,
+      int? id,
+      int? rewardPointsGiven,
+      int? redeemRewardPoints,
+      bool? isProcessing,
+      String? customerPhoneNumber,
+      double? amount,
+      String? updatedByUID,
+      String? customerUID,
       dynamic updatedOn,
-      String shopDocumentId,
-      String otp,
-      String error}) = _BillFreezedModel;
+      String? shopDocumentId,
+      String? otp,
+      String? error}) = _BillFreezedModel;
   factory BillFreezedModel.fromJson(Map<String, dynamic> json) =>
       _$BillFreezedModelFromJson(json);
 }

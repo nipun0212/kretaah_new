@@ -16,7 +16,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-void _editBill({BuildContext context, Database database, Bill bill}) {
+void _editBill({required BuildContext context, Database? database, Bill? bill}) {
   Navigator.push(
       context,
       MaterialPageRoute(
@@ -27,7 +27,7 @@ void _editBill({BuildContext context, Database database, Bill bill}) {
 }
 
 Future<void> _deleteBill(
-    {BuildContext context, Database database, Bill bill}) async {
+    {required BuildContext context, Database? database, Bill? bill}) async {
   showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -37,9 +37,9 @@ Future<void> _deleteBill(
               FlatButton(
                   child: Text('Yes'),
                   onPressed: () async {
-                    await database.deleteBill(
-                        documentId: bill.documentId,
-                        shopDocumentId: database.loggedInUser.shopDocumentId);
+                    await database!.deleteBill(
+                        documentId: bill!.documentId,
+                        shopDocumentId: database.loggedInUser!.shopDocumentId);
                     Navigator.of(context).pop();
                   }),
               FlatButton(
@@ -55,14 +55,14 @@ class ViewBills extends StatefulWidget {
 }
 
 class _ViewBillsState extends State<ViewBills> {
-  String _phoneNumber;
+  String? _phoneNumber;
   final TextEditingController _phoneNumberController = TextEditingController();
-  String _error;
+  String? _error;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   bool _viewFilterBar = false;
-  bool _isProcessing;
-  bool _isShopActive;
+  bool? _isProcessing;
+  bool? _isShopActive;
   bool _sortbyDate = true;
   Map<String, bool> _state = new Map<String, bool>();
 
@@ -94,7 +94,7 @@ class _ViewBillsState extends State<ViewBills> {
     return q;
   }
 
-  Color getColor(bool isProcessing, bool isShopActive) {
+  Color getColor(bool isProcessing, bool? isShopActive) {
     if (isProcessing) return Colors.orange;
     return Colors.green;
   }
@@ -109,7 +109,7 @@ class _ViewBillsState extends State<ViewBills> {
           keyboardType: TextInputType.phone,
           autofocus: true,
           validator: (value) {
-            if (_error != null || value.isEmpty) {
+            if (_error != null || value!.isEmpty) {
               return 'Please enter correct Mobile Number';
             }
             return null;
@@ -127,7 +127,7 @@ class _ViewBillsState extends State<ViewBills> {
     );
   }
 
-  InkWell buildStringFilter({String key, bool value, VoidCallback onTap}) {
+  InkWell buildStringFilter({required String key, bool? value, VoidCallback? onTap}) {
     return InkWell(
         highlightColor: value != null && value ? Colors.green : Colors.black,
         onTap: onTap,
@@ -203,7 +203,7 @@ class _ViewBillsState extends State<ViewBills> {
                             if (_isProcessing == null)
                               _isProcessing = true;
                             else
-                              _isProcessing = !_isProcessing;
+                              _isProcessing = !_isProcessing!;
                           });
                         }),
                   ],
@@ -233,11 +233,11 @@ class _ViewBillsState extends State<ViewBills> {
           child: StreamBuilder<List<Bill>>(
               stream: database.billsStream(
                   q: buildQuery,
-                  shopDocumentId: database.loggedInUser.shopDocumentId),
+                  shopDocumentId: database.loggedInUser!.shopDocumentId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
                   if (snapshot.data != null) {
-                    List<Bill> bill = snapshot.data;
+                    List<Bill> bill = snapshot.data!;
                     return Expanded(
                       child: ListView.builder(
                           shrinkWrap: true,
@@ -295,15 +295,15 @@ class _ViewBillsState extends State<ViewBills> {
                                 ],
                                 child: ListTileTheme(
                                   iconColor: Colors.green,
-                                  key: Key(bill[index].documentId),
+                                  key: Key(bill[index].documentId!),
                                   contentPadding: EdgeInsets.all(4.0),
                                   textColor:
-                                      getColor(bill[index].isProcessing, null),
+                                      getColor(bill[index].isProcessing!, null),
                                   // iconColor: Colors.orange,
                                   style: ListTileStyle.drawer,
                                   child: ListTile(
                                       contentPadding: EdgeInsets.all(8.0),
-                                      key: Key(bill[index].documentId),
+                                      key: Key(bill[index].documentId!),
                                       leading: StreamBuilder<User>(
                                           stream: database.userStream(
                                               uid: bill[index].customerUID),
@@ -324,7 +324,7 @@ class _ViewBillsState extends State<ViewBills> {
                                                           builder: (context) =>
                                                               ViewProfile(
                                                                 uid: userSnapshot
-                                                                    .data
+                                                                    .data!
                                                                     .documentId,
                                                               )));
                                                 },
@@ -376,7 +376,7 @@ class _ViewBillsState extends State<ViewBills> {
                                                             .active &&
                                                     userSnapshotNew.hasData)
                                                   return Text(
-                                                    userSnapshotNew.data.name ??
+                                                    userSnapshotNew.data!.name ??
                                                         '',
                                                     style:
                                                         TextStyle(fontSize: 24),
@@ -386,13 +386,13 @@ class _ViewBillsState extends State<ViewBills> {
                                               }),
                                           Text(
                                             bill[index]
-                                                    .customerPhoneNumber
+                                                    .customerPhoneNumber!
                                                     .contains('+91')
                                                 ? bill[index]
-                                                    .customerPhoneNumber
+                                                    .customerPhoneNumber!
                                                     .substring(3)
                                                 : bill[index]
-                                                    .customerPhoneNumber,
+                                                    .customerPhoneNumber!,
                                             style: TextStyle(fontSize: 22),
                                           ),
                                         ],

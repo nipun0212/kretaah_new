@@ -21,12 +21,12 @@ class EditBillNotifier extends StatefulWidget {
   final Database database;
   // final BillNotifier bill;
   final EditBillModel model;
-  final EditBillModel previousModel;
+  final EditBillModel? previousModel;
   const EditBillNotifier(
-      {@required this.model, @required this.database, this.previousModel
+      {required this.model, required this.database, this.previousModel
       // this.bill,
       });
-  static Widget create(BuildContext context, BillNotifier m) {
+  static Widget create(BuildContext context, BillNotifier? m) {
     // print('amount= ${m.amount}');
     // print('m=$m');
     final database = Provider.of<Database>(context, listen: false);
@@ -55,19 +55,19 @@ class EditBillNotifier extends StatefulWidget {
 }
 
 class _EditBillNotifierState extends State<EditBillNotifier> {
-  EditBillModel model;
-  int rewardPercentabe;
-  double _amount;
-  String _customerPhoneNumber;
-  String _description;
-  String _otp;
-  String _documentId;
-  int _rewardPointsGiven;
-  int _redeemRewardPoints;
+  late EditBillModel model;
+  int? rewardPercentabe;
+  double? _amount;
+  String? _customerPhoneNumber;
+  String? _description;
+  String? _otp;
+  String? _documentId;
+  int? _rewardPointsGiven;
+  int? _redeemRewardPoints;
   bool _isProcessing = true;
   bool _isShopActive = false;
   bool _isLoading = false;
-  bool _doYouWantToReedeem = false;
+  bool? _doYouWantToReedeem = false;
 
   FocusNode _amountFocusNode = FocusNode();
   TextEditingController _amountController = TextEditingController();
@@ -99,12 +99,12 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
   @override
   void initState() {
     model = widget.model;
-    if (model.bill.documentId != null) {
+    if (model.bill!.documentId != null) {
       _customerPhoneNumberController.text =
-          Util.getPhoneNumberWithoutCountryCode(model.bill.customerPhoneNumber);
+          Util.getPhoneNumberWithoutCountryCode(model.bill!.customerPhoneNumber!);
 
-      for (int i = 0; i < model.bill.item.length; i++) {
-        var item = model.bill.item[i];
+      for (int i = 0; i < model.bill!.item!.length; i++) {
+        var item = model.bill!.item![i];
         _itemNameController.add(TextEditingController(text: item.name));
         _itemRateController
             .add(TextEditingController(text: item.rate.toString()));
@@ -156,7 +156,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
     setState(() {
       _isLoading = true;
     });
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       print('_customerPhoneNumberController');
       print(_customerPhoneNumberController.text);
       // _customerPhoneNumber = '+91' + _customerPhoneNumberController.text;
@@ -186,23 +186,23 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
       //   //       sgst: 10),
       //   // ],
       // );
-      model.bill = model.bill.copyWith(
+      model.bill = model.bill!.copyWith(
           customerPhoneNumber:
-              Util.parsePhoneNumber(model.bill.customerPhoneNumber));
-      if (model.bill.documentId == null)
+              Util.parsePhoneNumber(model.bill!.customerPhoneNumber!));
+      if (model.bill!.documentId == null)
         database.createBill(
             bill: model.bill,
-            shopDocumentId: database.loggedInUser.shopDocumentId);
+            shopDocumentId: database.loggedInUser!.shopDocumentId);
       else {
         // print('bill= $bill');
-        model.bill = model.bill.copyWith(
-          customerUID: model.bill.customerUID,
+        model.bill = model.bill!.copyWith(
+          customerUID: model.bill!.customerUID,
         );
 
         database.updateBill(
             bill: model.bill,
-            documentId: model.bill.documentId,
-            shopDocumentId: database.loggedInUser.shopDocumentId);
+            documentId: model.bill!.documentId,
+            shopDocumentId: database.loggedInUser!.shopDocumentId);
       }
       Navigator.pop(context);
       setState(() {
@@ -213,8 +213,8 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (model.bill.item == null) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      if (model.bill!.item == null) {
         await model.setRewardPoints();
         model.addItem();
       }
@@ -256,8 +256,8 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                     ),
                   ],
                 ),
-                if (model.bill.item != null)
-                  for (var i = 0; i < model.bill.item.length; i++)
+                if (model.bill!.item != null)
+                  for (var i = 0; i < model.bill!.item!.length; i++)
                     _buildItemInput(database, i),
                 RaisedButton(
                     child: Text('Add Item'),
@@ -304,7 +304,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                         _doYouWantToReedeem = v;
                       });
                     }),
-                if (_doYouWantToReedeem)
+                if (_doYouWantToReedeem!)
                   StreamBuilder<List<Customer>>(
                       stream: database.customerStream(
                           q: (q) => q.where('phoneNumber',
@@ -314,7 +314,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                         if (snapshot.connectionState ==
                                 ConnectionState.active &&
                             snapshot.hasData &&
-                            snapshot.data.length > 0) {
+                            snapshot.data!.length > 0) {
                           // _redeemRewardPointsController.text =
                           //     snapshot.data?.first?.reward_points.toString();
                           return Column(
@@ -344,8 +344,8 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                                           const EdgeInsets.all(16.0),
                                       border: OutlineInputBorder()),
                                   validator: (reedemption) {
-                                    return int.parse(reedemption) >
-                                            snapshot.data?.first?.reward_points
+                                    return int.parse(reedemption!) >
+                                            snapshot.data?.first?.reward_points!
                                         ? "Enter points less then ${snapshot.data?.first?.reward_points}"
                                         : null;
                                   },
@@ -392,7 +392,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.active)
             return Center(child: CircularProgressIndicator());
-          if (!snapshot.hasData || snapshot.data.length <= 0)
+          if (!snapshot.hasData || snapshot.data!.length <= 0)
             return Text('No data');
           return Column(
             children: [
@@ -404,7 +404,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                 ),
               ),
               Text(
-                snapshot?.data?.first?.phoneNumber,
+                snapshot?.data?.first?.phoneNumber!,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -453,7 +453,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
 
   Widget _buildItemInput(database, index) {
     return Slidable(
-      key: ObjectKey(model.bill.item[index]),
+      key: ObjectKey(model.bill!.item![index]),
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       secondaryActions: <Widget>[
@@ -463,7 +463,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
             color: Colors.red,
             icon: Icons.more_horiz,
             onTap: () {
-              if (model.bill.item.length == 1) return;
+              if (model.bill!.item!.length == 1) return;
               if (_itemNameController.length > index) {
                 // _itemNameController[index].dispose();
                 _itemNameController.removeAt(index);
@@ -480,7 +480,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                 // _itemGSTController[index].dispose();
                 _itemGSTController.removeAt(index);
               }
-              model.bill.item.removeAt(index);
+              model.bill!.item!.removeAt(index);
               model.updateWith();
             })
       ],
@@ -543,7 +543,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                         validator: nameValidator,
                         onChanged: (quantity) {
                           if (quantity.isNotEmpty) {
-                            model.bill.item[index].quantity =
+                            model.bill!.item![index].quantity =
                                 double.parse(quantity);
                             model.updateItem(
                                 quantity: double.parse(quantity), index: index);
@@ -597,16 +597,16 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                   //     DropdownMenuItem(value: mapEntry.key, child: Text(mapEntry.value)))
                   // .toList();
                   DropdownButton(
-                      items: model.gstoptions.entries
+                      items: model.gstoptions!.entries
                           .map((e) => DropdownMenuItem(
                               key: Key(e.key),
                               value: e.value,
                               child: Text(e.key)))
                           .toList(),
-                      onChanged: (v) {
+                      onChanged: (dynamic v) {
                         model.updateItem(index: index, gst_percentage: v);
                       },
-                      value: model.bill.item[index].gst_percentage)
+                      value: model.bill!.item![index].gst_percentage)
                   // DropdownButton<GSTState>(
                   //   value: model.bill.item[index].gst_percentage,
                   //   icon: Icon(Icons.arrow_downward),
@@ -638,14 +638,14 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                       // Text('CGST = ${100} '),
                       // Text('Total = ${100} '),
                       Text(
-                          'Item Rate = ${model.bill.item[index]?.rateAfterGST?.toStringAsFixed(2)} '),
+                          'Item Rate = ${model.bill!.item![index]?.rateAfterGST?.toStringAsFixed(2)} '),
                       Text(
-                          'CGST = ${model.bill.item[index].cgst.toStringAsFixed(2)}'),
+                          'CGST = ${model.bill!.item![index].cgst.toStringAsFixed(2)}'),
                       Text(
-                          'CGST = ${model.bill.item[index].sgst.toStringAsFixed(2)}'),
+                          'CGST = ${model.bill!.item![index].sgst.toStringAsFixed(2)}'),
                     ],
                   ),
-                  Text('Total Amount = ${model.bill.item[index].totalAmount}')
+                  Text('Total Amount = ${model.bill!.item![index].totalAmount}')
                 ],
               ),
             ],
@@ -671,12 +671,12 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
           model.updateWith(amount: double.parse(amount));
           model.updateWith(
               rewardPointsGiven:
-                  (double.parse(amount) * (model.rewardPercentage / 100))
+                  (double.parse(amount) * (model.rewardPercentage! / 100))
                       .floor());
           // _amount = double.parse(amount);
           // _rewardPointsGiven = int.parse(
           //     (_amount * (reward_percentage / 100)).floor().toString());
-          _rewardGivenController.text = model.bill.rewardPointsGiven.toString();
+          _rewardGivenController.text = model.bill!.rewardPointsGiven.toString();
         },
         onEditingComplete: () => _onFormSubmit(database),
 
@@ -709,7 +709,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
     );
   }
 
-  String nameValidator(String v) {
+  String? nameValidator(String? v) {
     return null;
   }
 }

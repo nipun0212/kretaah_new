@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kretaa/services/auth.dart';
 
 class CustomAppBar {
-  CustomAppBar({@required this.title, @required this.context});
+  CustomAppBar({required this.title, required this.context});
   final String title;
   final BuildContext context;
   AppBar buildAppBar(AuthBase auth) {

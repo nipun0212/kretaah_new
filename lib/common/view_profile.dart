@@ -13,16 +13,16 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ViewProfile extends StatelessWidget {
-  const ViewProfile({Key key, this.uid}) : super(key: key);
+  const ViewProfile({Key? key, this.uid}) : super(key: key);
 
-  final String uid;
+  final String? uid;
   Future<void> _chooseAvatar(BuildContext context) async {
     try {
       // 1. Get image from picker
       final imagePicker =
           Provider.of<ImagePickerService>(context, listen: false);
       final File file =
-          File((await imagePicker.pickImage(source: ImageSource.gallery)).path);
+          File((await imagePicker.pickImage(source: ImageSource.gallery))!.path);
       if (file != null) {
         // 2. Upload to storage
         final storage =
@@ -31,7 +31,7 @@ class ViewProfile extends StatelessWidget {
         // 3. Save url to Firestore
         final database = Provider.of<Database>(context, listen: false);
         User firestoreUser = (await database
-            .userStream(uid: database.loggedInUser.documentId)
+            .userStream(uid: database.loggedInUser!.documentId)
             .first);
         firestoreUser = firestoreUser.copyWith(photoURL: downloadUrl);
         await database.updateUser(user: firestoreUser);
@@ -71,7 +71,7 @@ class ViewProfile extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active &&
                   snapshot.hasData) {
-                User user = snapshot.data;
+                User user = snapshot.data!;
                 print('Firestore user : ${snapshot.data}');
                 return Stack(
                   children: <Widget>[
@@ -108,7 +108,7 @@ class ViewProfile extends StatelessWidget {
                           ],
                         ),
                         SizedBox(height: 8.0),
-                        Text('${user.phoneNumber.substring(3)}',
+                        Text('${user.phoneNumber!.substring(3)}',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 24)),
                       ],

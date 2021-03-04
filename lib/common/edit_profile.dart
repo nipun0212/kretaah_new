@@ -8,16 +8,16 @@ import 'package:kretaa/services/database.dart';
 import 'package:provider/provider.dart';
 
 class EditProfile extends StatefulWidget {
-  const EditProfile({Key key, this.user}) : super(key: key);
+  const EditProfile({Key? key, this.user}) : super(key: key);
 
-  final User user;
+  final User? user;
 
   @override
   _EditProfileState createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-  String _name;
+  String? _name;
   @override
   initState() {
     _name = widget.user?.name;
@@ -62,7 +62,7 @@ class _EditProfileState extends State<EditProfile> {
                         final database =
                             Provider.of<Database>(context, listen: false);
                         User firestoreUser = (await database
-                            .userStream(uid: database.loggedInUser.documentId)
+                            .userStream(uid: database.loggedInUser!.documentId)
                             .first);
                         firestoreUser = firestoreUser.copyWith(name: _name);
                         await database.updateUser(user: firestoreUser);

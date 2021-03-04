@@ -6,8 +6,8 @@ import 'package:kretaa/services/database.dart';
 import 'package:kretaa/shop_admin/state/setting_model.dart';
 
 class ValidationItem {
-  final String value;
-  final String error;
+  final String? value;
+  final String? error;
 
   ValidationItem({this.value, this.error});
 }
@@ -18,14 +18,14 @@ class EditBillModel with ChangeNotifier {
   ValidationItem get phoneNumberValidation => _phoneNumberValidation;
   List<ValidationItem> get itemNameValidation => _itemNameValidation;
   final Database database;
-  BillNotifier bill;
-  String otp;
-  int rewardPercentage;
-  String default_gst_setting;
+  BillNotifier? bill;
+  String? otp;
+  int? rewardPercentage;
+  String? default_gst_setting;
   bool gstIncluded;
-  Map<String, int> gstoptions;
+  Map<String, int>? gstoptions;
   EditBillModel(
-      {@required this.database,
+      {required this.database,
       this.bill,
       this.rewardPercentage,
       this.otp,
@@ -35,28 +35,28 @@ class EditBillModel with ChangeNotifier {
   }
 
   void updateWith(
-      {String documentId,
-      String description,
-      double amount,
-      String customerPhoneNumber,
-      int rewardPointsGiven,
-      int redeemRewardPoints,
-      int rewardPercentage,
-      String otp,
-      bool gstIncluded,
-      String default_gst_setting,
-      List<ItemNotifier> item}) {
-    this.bill.documentId = documentId ?? this.bill.documentId;
-    this.bill.description = description ?? this.bill.description;
-    this.bill.amount = amount ?? this.bill.amount;
-    this.bill.customerPhoneNumber =
-        customerPhoneNumber ?? this.bill.customerPhoneNumber;
-    this.bill.rewardPointsGiven =
-        rewardPointsGiven ?? this.bill.rewardPointsGiven;
-    this.bill.redeemRewardPoints =
-        redeemRewardPoints ?? this.bill.redeemRewardPoints;
+      {String? documentId,
+      String? description,
+      double? amount,
+      String? customerPhoneNumber,
+      int? rewardPointsGiven,
+      int? redeemRewardPoints,
+      int? rewardPercentage,
+      String? otp,
+      bool? gstIncluded,
+      String? default_gst_setting,
+      List<ItemNotifier>? item}) {
+    this.bill!.documentId = documentId ?? this.bill!.documentId;
+    this.bill!.description = description ?? this.bill!.description;
+    this.bill!.amount = amount ?? this.bill!.amount;
+    this.bill!.customerPhoneNumber =
+        customerPhoneNumber ?? this.bill!.customerPhoneNumber;
+    this.bill!.rewardPointsGiven =
+        rewardPointsGiven ?? this.bill!.rewardPointsGiven;
+    this.bill!.redeemRewardPoints =
+        redeemRewardPoints ?? this.bill!.redeemRewardPoints;
     this.otp = otp ?? this.otp;
-    this.bill.item = item ?? this.bill.item;
+    this.bill!.item = item ?? this.bill!.item;
     this.rewardPercentage = rewardPercentage ?? this.rewardPercentage;
     this.gstIncluded = gstIncluded ?? this.gstIncluded;
     this.default_gst_setting = default_gst_setting ?? this.default_gst_setting;
@@ -65,8 +65,8 @@ class EditBillModel with ChangeNotifier {
   }
 
   void updateAllItem() {
-    if (bill.item != null)
-      for (int i = 0; i < bill.item.length; i++) {
+    if (bill!.item != null)
+      for (int i = 0; i < bill!.item!.length; i++) {
         updateItem(index: i);
       }
   }
@@ -82,14 +82,14 @@ class EditBillModel with ChangeNotifier {
   }
 
   updateItem({
-    @required int index,
-    String name,
-    String description,
-    double rate,
-    double quantity,
-    int gst_percentage,
+    required int index,
+    String? name,
+    String? description,
+    double? rate,
+    double? quantity,
+    int? gst_percentage,
   }) {
-    ItemNotifier item = this.bill.item[index];
+    ItemNotifier item = this.bill!.item![index];
     item.name = name ?? item.name;
     item.description = description ?? item.description;
     item.rate = rate ?? item.rate;
@@ -97,42 +97,42 @@ class EditBillModel with ChangeNotifier {
     item.gst_percentage = gst_percentage ?? item.gst_percentage;
 
     double itemTotal = (item.quantity * item.rate);
-    int gstRate = item.gst_percentage;
+    int? gstRate = item.gst_percentage;
     double gstTax = 0.0;
     if (this.gstIncluded) {
       gstTax = itemTotal -
           (itemTotal *
-              double.parse((100 / (100 + gstRate)).toStringAsFixed(2)));
+              double.parse((100 / (100 + gstRate!)).toStringAsFixed(2)));
       item.rateAfterGST = double.parse(
           ((itemTotal - gstTax) / item.quantity).toStringAsFixed(2));
     } else {
-      gstTax = itemTotal * gstRate / 100;
+      gstTax = itemTotal * gstRate! / 100;
       item.rateAfterGST = item.rate;
     }
     item.cgst = gstTax / 2;
     item.sgst = gstTax / 2;
     item.totalGST = gstTax;
-    item.totalAmount = item.rateAfterGST * item.quantity + gstTax;
-    this.bill.item[index] = item;
+    item.totalAmount = item.rateAfterGST! * item.quantity + gstTax;
+    this.bill!.item![index] = item;
     notifyListeners();
   }
 
   void addItem() {
-    if (this.bill.item == null) this.bill.item = List<ItemNotifier>();
-    this.bill.item.add(
-        ItemNotifier(gst_percentage: gstoptions[default_gst_setting] ?? 0));
+    if (this.bill!.item == null) this.bill!.item = List<ItemNotifier>();
+    this.bill!.item!.add(
+        ItemNotifier(gst_percentage: gstoptions![default_gst_setting!] ?? 0));
     notifyListeners();
   }
 
-  Future<int> setRewardPoints() async {
+  Future<int?> setRewardPoints() async {
     this.gstoptions = Gst().gst_options;
     SettingModel rewardSettingStream = await database
         .rewardSettingStream(
-            shopDocumentId: database.loggedInUser.shopDocumentId)
+            shopDocumentId: database.loggedInUser!.shopDocumentId)
         .first;
 
-    int rewardPercentage = rewardSettingStream.reward_percentage;
-    String default_gst_setting = rewardSettingStream.default_gst_setting;
+    int? rewardPercentage = rewardSettingStream.reward_percentage;
+    String? default_gst_setting = rewardSettingStream.default_gst_setting;
     // updateItem(index: null)
     updateWith(
         rewardPercentage: rewardPercentage,

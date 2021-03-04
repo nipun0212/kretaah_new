@@ -9,15 +9,15 @@ part 'shop_freezed_model.g.dart';
 abstract class ShopFreezedModel with _$ShopFreezedModel {
   @JsonSerializable(explicitToJson: true)
   factory ShopFreezedModel(
-      {String documentId,
-      int id,
-      bool isProcessing,
-      String shopName,
-      String ownerName,
-      String ownerPhoneNumber,
-      String ownerUID,
-      bool isShopActive,
-      AddressFreezedModel address}) = _ShopFreezedModel;
+      {String? documentId,
+      int? id,
+      bool? isProcessing,
+      String? shopName,
+      String? ownerName,
+      String? ownerPhoneNumber,
+      String? ownerUID,
+      bool? isShopActive,
+      AddressFreezedModel? address}) = _ShopFreezedModel;
   factory ShopFreezedModel.fromJson(Map<String, dynamic> json) =>
       _$ShopFreezedModelFromJson(json);
 }

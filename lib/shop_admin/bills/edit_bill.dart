@@ -13,11 +13,11 @@ import 'package:kretaa/shop_admin/state/setting_state.dart';
 import 'package:provider/provider.dart';
 
 class EditBill extends StatefulWidget {
-  final Database database;
-  final Bill bill;
+  final Database? database;
+  final Bill? bill;
   const EditBill({
-    Key key,
-    @required this.database,
+    Key? key,
+    required this.database,
     this.bill,
   }) : super(key: key);
   @override
@@ -25,17 +25,17 @@ class EditBill extends StatefulWidget {
 }
 
 class _EditBillState extends State<EditBill> {
-  double _amount;
-  String _customerPhoneNumber;
-  String _description;
-  String _otp;
-  String _documentId;
-  int _rewardPointsGiven;
-  int _redeemRewardPoints;
+  double? _amount;
+  String? _customerPhoneNumber;
+  String? _description;
+  String? _otp;
+  String? _documentId;
+  int? _rewardPointsGiven;
+  int? _redeemRewardPoints;
   bool _isProcessing = true;
   bool _isShopActive = false;
   bool _isLoading = false;
-  bool _doYouWantToReedeem = false;
+  bool? _doYouWantToReedeem = false;
   FocusNode _amountFocusNode = FocusNode();
   TextEditingController _amountController = TextEditingController();
   TextEditingController _rewardGivenController = TextEditingController();
@@ -52,18 +52,18 @@ class _EditBillState extends State<EditBill> {
   void initState() {
     //_redeemRewardPointsController.text = 0.toString();
     if (widget.bill != null) {
-      _amount = widget.bill.amount == null ? '' : widget.bill.amount;
-      _amountController.text = widget.bill.amount.toString();
-      _rewardGivenController.text = widget.bill.rewardPointsGiven.toString();
+      _amount = widget.bill!.amount == null ? '' as double? : widget.bill!.amount;
+      _amountController.text = widget.bill!.amount.toString();
+      _rewardGivenController.text = widget.bill!.rewardPointsGiven.toString();
       _customerPhoneNumberController.text =
-          widget.bill.customerPhoneNumber == null
+          widget.bill!.customerPhoneNumber == null
               ? ''
-              : widget.bill.customerPhoneNumber.contains('+91')
-                  ? widget.bill.customerPhoneNumber.substring(3)
-                  : widget.bill.customerPhoneNumber;
+              : widget.bill!.customerPhoneNumber!.contains('+91')
+                  ? widget.bill!.customerPhoneNumber!.substring(3)
+                  : widget.bill!.customerPhoneNumber!;
       _descriptionController.text =
-          widget.bill.description == null ? '' : widget.bill.description;
-      _documentId = widget.bill.documentId;
+          widget.bill!.description == null ? '' : widget.bill!.description!;
+      _documentId = widget.bill!.documentId;
     }
     super.initState();
   }
@@ -72,7 +72,7 @@ class _EditBillState extends State<EditBill> {
     setState(() {
       _isLoading = true;
     });
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       print('_customerPhoneNumberController');
       print(_customerPhoneNumberController.text);
       _customerPhoneNumber = '+91' + _customerPhoneNumberController.text;
@@ -92,7 +92,7 @@ class _EditBillState extends State<EditBill> {
             model: bill, shopDocumentId: database.loggedInUser.shopDocumentId);
       else {
         bill = bill.copyWith(
-          customerUID: widget.bill.customerUID,
+          customerUID: widget.bill!.customerUID,
         );
         database.updateBill(model: bill, documentId: _documentId);
       }
@@ -129,9 +129,9 @@ class _EditBillState extends State<EditBill> {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.active &&
                           snapshot.hasData &&
-                          snapshot.data.length > 0) {
+                          snapshot.data!.length > 0) {
                         return Text(
-                          snapshot?.data?.first?.name,
+                          snapshot?.data?.first?.name!,
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -151,7 +151,7 @@ class _EditBillState extends State<EditBill> {
                 StreamBuilder<SettingModel>(
                     initialData: SettingModel(),
                     stream: database.rewardSettingStream(
-                        shopDocumentId: database.loggedInUser.shopDocumentId),
+                        shopDocumentId: database.loggedInUser!.shopDocumentId),
                     builder: (context, snapshot) {
                       return _buildAmountInput(
                           database, snapshot.data?.reward_percentage);
@@ -186,7 +186,7 @@ class _EditBillState extends State<EditBill> {
                         _doYouWantToReedeem = v;
                       });
                     }),
-                if (_doYouWantToReedeem)
+                if (_doYouWantToReedeem!)
                   StreamBuilder<List<Customer>>(
                       stream: database.customerStream(
                           q: (q) => q.where('phoneNumber',
@@ -196,7 +196,7 @@ class _EditBillState extends State<EditBill> {
                         if (snapshot.connectionState ==
                                 ConnectionState.active &&
                             snapshot.hasData &&
-                            snapshot.data.length > 0) {
+                            snapshot.data!.length > 0) {
                           // _redeemRewardPointsController.text =
                           //     snapshot.data?.first?.reward_points.toString();
                           return Column(
@@ -226,8 +226,8 @@ class _EditBillState extends State<EditBill> {
                                           const EdgeInsets.all(16.0),
                                       border: OutlineInputBorder()),
                                   validator: (reedemption) {
-                                    return int.parse(reedemption) >
-                                            snapshot.data?.first?.reward_points
+                                    return int.parse(reedemption!) >
+                                            snapshot.data?.first?.reward_points!
                                         ? "Enter points less then ${snapshot.data?.first?.reward_points}"
                                         : null;
                                   },
@@ -276,7 +276,7 @@ class _EditBillState extends State<EditBill> {
         controller: _customerPhoneNumberController,
         focusNode: _customerPhoneNumberFocusNode,
         validator: (v) {
-          if (v.length < 10)
+          if (v!.length < 10)
             return "Please Enter Correct Number";
           else
             return null;
@@ -313,7 +313,7 @@ class _EditBillState extends State<EditBill> {
           setState(() {
             _amount = double.parse(amount);
             _rewardPointsGiven = int.parse(
-                (_amount * (reward_percentage / 100)).floor().toString());
+                (_amount! * (reward_percentage / 100)).floor().toString());
             _rewardGivenController.text = _rewardPointsGiven.toString();
           });
         },
@@ -350,7 +350,7 @@ class _EditBillState extends State<EditBill> {
     );
   }
 
-  String nameValidator(String v) {
+  String? nameValidator(String? v) {
     return null;
   }
 }

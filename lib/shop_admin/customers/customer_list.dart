@@ -17,11 +17,11 @@ class CustomerList extends StatelessWidget {
         ),
         StreamBuilder<Object>(
             stream: database.customerStream(
-                shopDocumentId: database.loggedInUser.shopDocumentId),
+                shopDocumentId: database.loggedInUser!.shopDocumentId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.data != null) {
-                  List<Customer> customer = snapshot.data;
+                  List<Customer> customer = snapshot.data as List<Customer>;
                   print('Custmome $customer');
                   return SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
@@ -40,11 +40,11 @@ class CustomerList extends StatelessWidget {
                                         borderColor: Colors.black54,
                                         borderWidth: 2.0,
                                       ),
-                                      title: Text((snapshot.data?.name != null)
-                                          ? snapshot.data?.name
-                                          : (snapshot.data?.phoneNumber != null)
-                                              ? snapshot.data?.phoneNumber
-                                              : ''),
+                                      title: Text(((snapshot.data?.name != null)
+                                          ? snapshot.data?.name!
+                                          : ((snapshot.data?.phoneNumber != null)
+                                              ? snapshot.data?.phoneNumber!
+                                              : '')!)!),
                                       subtitle: Text(customer[index]
                                           .reward_points
                                           .toString())),

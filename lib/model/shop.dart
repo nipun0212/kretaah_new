@@ -3,24 +3,24 @@ import 'package:meta/meta.dart';
 enum ShopState { processing, done, active }
 
 class Shop {
-  final String documentId;
-  final int id;
-  final bool isProcessing;
-  final String shopName;
-  final String ownerName;
-  final String ownerPhoneNumber;
-  final String ownerUID;
-  final bool isShopActive;
+  final String? documentId;
+  final int? id;
+  final bool? isProcessing;
+  final String? shopName;
+  final String? ownerName;
+  final String? ownerPhoneNumber;
+  final String? ownerUID;
+  final bool? isShopActive;
 
   Shop(
       {this.documentId,
       this.id,
-      @required this.shopName,
-      @required this.isProcessing,
-      @required this.ownerName,
-      @required this.ownerPhoneNumber,
+      required this.shopName,
+      required this.isProcessing,
+      required this.ownerName,
+      required this.ownerPhoneNumber,
       this.ownerUID,
-      @required this.isShopActive});
+      required this.isShopActive});
 
   Map<String, dynamic> toMap() {
     return {
@@ -34,13 +34,13 @@ class Shop {
 
   factory Shop.fromMap(Map<String, dynamic> data, String documentId) {
     // print(data);
-    final int id = data['id'];
-    final String shopName = data['shopName'];
-    final String ownerName = data['ownerName'];
-    final bool isProcessing = data['isProcessing'];
-    final String ownerPhoneNumber = data['ownerPhoneNumber'];
-    final String ownerUID = data['ownerUID'];
-    final bool isShopActive = data['isShopActive'];
+    final int? id = data['id'];
+    final String? shopName = data['shopName'];
+    final String? ownerName = data['ownerName'];
+    final bool? isProcessing = data['isProcessing'];
+    final String? ownerPhoneNumber = data['ownerPhoneNumber'];
+    final String? ownerUID = data['ownerUID'];
+    final bool? isShopActive = data['isShopActive'];
     // if(ownerPhoneNumber.contains('+91'))
     //   ownerPhoneNumber = ownerPhoneNumber.substring(3);
 
@@ -74,21 +74,21 @@ class Shop {
   // }
 
   Shop copyWith(
-      {String documentId,
-      String id,
-      String shopName,
-      String ownerName,
-      String ownerPhoneNumber,
-      String isProcessing,
-      String isShopActive}) {
+      {String? documentId,
+      String? id,
+      String? shopName,
+      String? ownerName,
+      String? ownerPhoneNumber,
+      String? isProcessing,
+      String? isShopActive}) {
     return Shop(
       documentId: documentId ?? this.documentId,
-      id: id ?? this.id,
-      isProcessing: isProcessing ?? this.isProcessing,
+      id: id as int? ?? this.id,
+      isProcessing: isProcessing as bool? ?? this.isProcessing,
       shopName: shopName ?? this.shopName,
       ownerName: ownerName ?? this.ownerName,
       ownerPhoneNumber: ownerPhoneNumber ?? this.ownerPhoneNumber,
-      isShopActive: isShopActive ?? this.isShopActive,
+      isShopActive: isShopActive as bool? ?? this.isShopActive,
     );
   }
 
