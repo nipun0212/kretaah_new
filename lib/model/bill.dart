@@ -2,28 +2,28 @@ import 'package:kretaa/model/item.dart';
 import 'package:meta/meta.dart';
 
 class Bill {
-  final String? documentId;
-  final String? description;
-  final int? id;
-  final int? rewardPointsGiven;
-  final int? redeemRewardPoints;
-  final bool? isProcessing;
-  final String? customerPhoneNumber;
-  final double? amount;
-  final String? updatedByUID;
-  final String? customerUID;
+  final String documentId;
+  final String description;
+  final int id;
+  final int rewardPointsGiven;
+  final int redeemRewardPoints;
+  final bool isProcessing;
+  final String customerPhoneNumber;
+  final double amount;
+  final String updatedByUID;
+  final String customerUID;
   final dynamic updatedOn;
-  final String? shopDocumentId;
-  final String? otp;
-  final List<ItemNotifier>? item;
+  final String shopDocumentId;
+  final String otp;
+  final List<ItemNotifier> item;
 
   Bill(
       {this.documentId,
       this.id,
       this.description,
-      required this.amount,
-      required this.isProcessing,
-      required this.customerPhoneNumber,
+      @required this.amount,
+      @required this.isProcessing,
+      @required this.customerPhoneNumber,
       this.item,
       this.updatedByUID,
       this.customerUID,
@@ -36,9 +36,9 @@ class Bill {
   Map<String, dynamic> toMap() {
     print('Item new = $item');
     List<Map<String, dynamic>> itemMap = List<Map<String, dynamic>>();
-    for (var i = 0; i < item!.length; i++) {
-      print('itemr i = ${item![i].toMap()}');
-      itemMap.add(item![i].toMap());
+    for (var i = 0; i < item.length; i++) {
+      print('itemr i = ${item[i].toMap()}');
+      itemMap.add(item[i].toMap());
     }
     return {
       'description': description,
@@ -65,15 +65,15 @@ class Bill {
       for (var i = 0; i < data['item'].length; i++) {
         itemObject.add(ItemNotifier.fromMap(data['item'][i]));
       }
-    final int? id = data['id'];
-    final String? description = data['description'];
-    final double? amount = data['amount'];
-    final bool? isProcessing = data['isProcessing'];
-    final String? customerPhoneNumber = data['customerPhoneNumber'];
-    final String? updatedByUID = data['updatedByUID'];
-    final String? customerUID = data['customerUID'];
-    final int? rewardPointsGiven = data['rewardPointsGiven'];
-    final int? redeemRewardPoints = data['redeemRewardPoints'];
+    final int id = data['id'];
+    final String description = data['description'];
+    final double amount = data['amount'];
+    final bool isProcessing = data['isProcessing'];
+    final String customerPhoneNumber = data['customerPhoneNumber'];
+    final String updatedByUID = data['updatedByUID'];
+    final String customerUID = data['customerUID'];
+    final int rewardPointsGiven = data['rewardPointsGiven'];
+    final int redeemRewardPoints = data['redeemRewardPoints'];
     final dynamic updatedOn = data['updatedOn'];
     final List<ItemNotifier> item = itemObject;
     final shopDocumentId = path.split('/')[1];
@@ -98,25 +98,25 @@ class Bill {
   }
 
   Bill copyWith(
-      {String? documentId,
-      String? description,
-      String? id,
-      double? amount,
-      String? isProcessing,
-      String? updatedByUID,
-      String? customerPhoneNumber,
-      String? customerUID,
+      {String documentId,
+      String description,
+      String id,
+      double amount,
+      String isProcessing,
+      String updatedByUID,
+      String customerPhoneNumber,
+      String customerUID,
       dynamic updatedOn,
-      int? rewardPointsGiven,
-      int? redeemRewardPoints,
-      String? shopId,
-      String? otp,
-      List<ItemNotifier>? item}) {
+      int rewardPointsGiven,
+      int redeemRewardPoints,
+      String shopId,
+      String otp,
+      List<ItemNotifier> item}) {
     return Bill(
         documentId: documentId ?? this.documentId,
         description: description ?? this.description,
-        id: id as int? ?? this.id,
-        isProcessing: isProcessing as bool? ?? this.isProcessing,
+        id: id ?? this.id,
+        isProcessing: isProcessing ?? this.isProcessing,
         amount: amount ?? this.amount,
         updatedByUID: updatedByUID ?? this.updatedByUID,
         customerUID: customerUID ?? this.customerUID,

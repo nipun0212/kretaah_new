@@ -30,11 +30,11 @@ class ShopList extends StatelessWidget {
         StreamBuilder<List<Customer>>(
             stream: database.customerCollectionStream(
                 q: (q) => q.where('customerUID',
-                    isEqualTo: database.loggedInUser!.documentId)),
+                    isEqualTo: database.loggedInUser.documentId)),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.data != null) {
-                  List<Customer>? customer = snapshot.data;
+                  List<Customer> customer = snapshot.data;
                   print('Bill $customer');
                   // print('Path = '${bill[0].documentId})
                   return SliverList(
@@ -54,8 +54,8 @@ class ShopList extends StatelessWidget {
                                             //     .path
                                             //     .split('/')[1]
                                             //     .toString()
-                                            shopDocumentId: customer![index]
-                                                .path!
+                                            shopDocumentId: customer[index]
+                                                .path
                                                 .split('/')[1]
                                                 .toString()),
                                       )));
@@ -64,8 +64,8 @@ class ShopList extends StatelessWidget {
                           children: [
                             StreamBuilder<ShopFreezedModel>(
                                 stream: database.shopDocumentStream(
-                                    shopId: customer![index]
-                                        .path!
+                                    shopId: customer[index]
+                                        .path
                                         .split('/')[1]
                                         .toString()),
                                 builder: (context, snapshot) {
@@ -78,15 +78,15 @@ class ShopList extends StatelessWidget {
                                           borderColor: Colors.black54,
                                           borderWidth: 2.0,
                                         ),
-                                        title: Text(((snapshot.data?.shopName !=
+                                        title: Text((snapshot.data?.shopName !=
                                                 null)
-                                            ? snapshot.data?.shopName!
-                                            : ((snapshot.data
+                                            ? snapshot.data?.shopName
+                                            : (snapshot.data
                                                         ?.ownerPhoneNumber !=
                                                     null)
                                                 ? snapshot
-                                                    .data?.ownerPhoneNumber!
-                                                : '')!)!),
+                                                    .data?.ownerPhoneNumber
+                                                : ''),
                                         subtitle:
                                             // Text(bill[index].amount.toString())),
                                             Text(customer[index]

@@ -3,21 +3,21 @@ import 'package:flutter/services.dart';
 
 class FormInput extends StatelessWidget {
   const FormInput(
-      {Key? key,
-      required this.name,
-      required this.textFormField,
+      {Key key,
+      @required this.name,
+      @required this.textFormField,
       this.sizedBoxWidth})
       : super(key: key);
   // final BuildContext context;
   // var screenSize = MediaQuery.of(context).size;
   final String name;
-  final double? sizedBoxWidth;
+  final double sizedBoxWidth;
   final TextFormField textFormField;
   static const double _fontSize = 16.0;
   static const FontWeight _fontWeight = FontWeight.w600;
   static const double _textInputGap = 4.0;
 
-  static InputDecoration inputDecoration({String? errorText}) {
+  static InputDecoration inputDecoration({String errorText}) {
     return InputDecoration(
         contentPadding: const EdgeInsets.all(16.0),
         border: OutlineInputBorder(),
@@ -32,7 +32,7 @@ class FormInput extends StatelessWidget {
           maxLines: 1,
           keyboardType: TextInputType.phone,
           validator: (value) {
-            if (value!.isEmpty) {
+            if (value.isEmpty) {
               return 'Please enter correct Mobile Number';
             }
             return null;
@@ -53,7 +53,7 @@ class FormInput extends StatelessWidget {
           maxLines: 1,
           keyboardType: TextInputType.phone,
           validator: (value) {
-            if (value!.isEmpty) {
+            if (value.isEmpty) {
               return 'Please enter correct Mobile Number';
             }
             return null;

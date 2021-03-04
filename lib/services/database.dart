@@ -17,42 +17,42 @@ import 'package:kretaa/shop_admin/state/setting_state.dart';
 import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 
 abstract class Database {
-  User? get loggedInUser;
-  Future<void> createShop({required ShopFreezedModel shop});
+  User get loggedInUser;
+  Future<void> createShop({@required ShopFreezedModel shop});
   Future<void> updateShop(
-      {required ShopFreezedModel shop, required String documentId});
-  Future<void> deleteShop({required String? documentId});
-  Stream<User> userStream({required String? uid});
-  Stream<List<User>> usersStream({q(Query query)?});
+      {@required ShopFreezedModel shop, @required String documentId});
+  Future<void> deleteShop({@required String documentId});
+  Stream<User> userStream({@required String uid});
+  Stream<List<User>> usersStream({q(Query query)});
   // Stream<FirestoreUser> userStreamByUID({String uid});
-  Future<void> updateUser({required User user});
-  Stream<SettingModel> rewardSettingStream({String? shopDocumentId});
+  Future<void> updateUser({@required User user});
+  Stream<SettingModel> rewardSettingStream({String shopDocumentId});
   Future<void> updateRewardSetting(
-      {String? shopDocumentId, SettingModel? rewardSettingDoc});
+      {String shopDocumentId, SettingModel rewardSettingDoc});
 
-  Stream<List<ShopFreezedModel>> shopStream({q(Query query)?});
-  Stream<ShopFreezedModel> shopDocumentStream({String? shopId});
+  Stream<List<ShopFreezedModel>> shopStream({q(Query query)});
+  Stream<ShopFreezedModel> shopDocumentStream({String shopId});
   Stream<List<Bill>> billsStream(
-      {q(Query query)?, bool? collectionGroup, String? shopDocumentId});
+      {q(Query query), bool collectionGroup, String shopDocumentId});
   Stream<List<BillNotifier>> billsStreamNotifier(
-      {q(Query query)?, bool? collectionGroup, String? shopDocumentId});
-  Stream<Bill> billStream({String? billDocumentId, String? shopDocumentId});
+      {q(Query query), bool collectionGroup, String shopDocumentId});
+  Stream<Bill> billStream({String billDocumentId, String shopDocumentId});
   Stream<BillNotifier> billStreamNotifier(
-      {String? billDocumentId, String? shopDocumentId});
+      {String billDocumentId, String shopDocumentId});
 
-  Stream<List<Customer>> customerCollectionStream({q(Query query)?});
+  Stream<List<Customer>> customerCollectionStream({q(Query query)});
   Stream<List<Customer>> customerStream(
-      {q(Query query)?, String? shopDocumentId});
+      {q(Query query), String shopDocumentId});
 
   Future<void> createBill(
-      {required BillNotifier? bill, required String? shopDocumentId});
+      {@required BillNotifier bill, @required String shopDocumentId});
   Future<void> updateBill(
-      {required BillNotifier? bill,
-      required String? documentId,
-      required String? shopDocumentId});
+      {@required BillNotifier bill,
+      @required String documentId,
+      @required String shopDocumentId});
 
   Future<void> deleteBill(
-      {required String? documentId, required String? shopDocumentId});
+      {@required String documentId, @required String shopDocumentId});
 
   // Stream<Gst> gst();
 }
@@ -60,30 +60,30 @@ abstract class Database {
 class FirestoreDatabase extends Database {
   final instance = FirestoreService();
 
-  FirestoreDatabase({required this.user});
-  final User? user;
+  FirestoreDatabase({@required this.user});
+  final User user;
 
   @override
-  User? get loggedInUser {
+  User get loggedInUser {
     return user;
   }
 
   @override
-  Stream<SettingModel> rewardSettingStream({String? shopDocumentId}) {
+  Stream<SettingModel> rewardSettingStream({String shopDocumentId}) {
     return instance.documentStream(
         path: ApiPath.RewardSetting(shopDocumentId),
-        builder: (data, documentId) => SettingModel.fromJson(data!));
+        builder: (data, documentId) => SettingModel.fromJson(data));
   }
 
   Future<void> updateRewardSetting(
-      {String? shopDocumentId, SettingModel? rewardSettingDoc}) {
+      {String shopDocumentId, SettingModel rewardSettingDoc}) {
     return instance.updateDocument(
         path: ApiPath.RewardSetting(shopDocumentId),
-        data: rewardSettingDoc!.toJson());
+        data: rewardSettingDoc.toJson());
   }
 
   @override
-  Future<void> createShop({required ShopFreezedModel shop}) {
+  Future<void> createShop({@required ShopFreezedModel shop}) {
     print(shop.toString());
     return instance.addDocumentToCollection(
         path: ApiPath.Shops(), data: shop.toJson());
@@ -91,7 +91,7 @@ class FirestoreDatabase extends Database {
 
   @override
   Future<void> updateShop(
-      {required ShopFreezedModel shop, required String documentId}) {
+      {@required ShopFreezedModel shop, @required String documentId}) {
     print("shop.toJson()");
     print(shop.toJson());
     return instance.updateDocument(
@@ -99,30 +99,30 @@ class FirestoreDatabase extends Database {
   }
 
   @override
-  Future<void> deleteShop({required String? documentId}) {
+  Future<void> deleteShop({@required String documentId}) {
     return instance.deleteDocument(path: ApiPath.Shop(documentId));
   }
 
   @override
-  Stream<List<ShopFreezedModel>> shopStream({q(Query query)?}) {
+  Stream<List<ShopFreezedModel>> shopStream({q(Query query)}) {
     return instance.collectionStream(
         path: ApiPath.Shops(),
-        queryBuilder: q as Query Function(Query)?,
+        queryBuilder: q,
         builder: (data, documentId, path) {
-          data!.update("documentId", (value) => documentId,
+          data.update("documentId", (value) => documentId,
               ifAbsent: () => documentId);
           return ShopFreezedModel.fromJson(data);
         });
   }
 
   @override
-  Stream<ShopFreezedModel> shopDocumentStream({String? shopId}) {
+  Stream<ShopFreezedModel> shopDocumentStream({String shopId}) {
     print('shopId= $shopId');
 
     return instance.documentStream(
-        path: ApiPath.Shops() + '/' + shopId!,
+        path: ApiPath.Shops() + '/' + shopId,
         builder: (data, documentId) {
-          data!.update("documentId", (value) => documentId,
+          data.update("documentId", (value) => documentId,
               ifAbsent: () => documentId);
           return ShopFreezedModel.fromJson(data);
         });
@@ -130,62 +130,62 @@ class FirestoreDatabase extends Database {
 
   @override
   Stream<List<Bill>> billsStream(
-      {q(Query query)?, bool? collectionGroup = false, String? shopDocumentId}) {
+      {q(Query query), bool collectionGroup = false, String shopDocumentId}) {
     //print('ownerName $shopDocumentId');
-    if (collectionGroup!) {
+    if (collectionGroup) {
       return instance.collectionGroupStream(
           path: 'bills',
-          queryBuilder: q as Query Function(Query)?,
+          queryBuilder: q,
           builder: (data, documentId, path) =>
-              Bill.fromMap(data!, documentId, path));
+              Bill.fromMap(data, documentId, path));
     }
     return instance.collectionStream(
         path: ApiPath.Bills(shopDocumentId: shopDocumentId),
-        queryBuilder: q as Query Function(Query)?,
+        queryBuilder: q,
         builder: (data, documentId, path) =>
-            Bill.fromMap(data!, documentId, path));
+            Bill.fromMap(data, documentId, path));
   }
 
   @override
   Stream<List<BillNotifier>> billsStreamNotifier(
-      {q(Query query)?, bool? collectionGroup = false, String? shopDocumentId}) {
+      {q(Query query), bool collectionGroup = false, String shopDocumentId}) {
     //print('ownerName $shopDocumentId');
-    if (collectionGroup!) {
+    if (collectionGroup) {
       return instance.collectionGroupStream(
           path: 'bills',
-          queryBuilder: q as Query Function(Query)?,
+          queryBuilder: q,
           builder: (data, documentId, path) =>
-              BillNotifier.fromMap(data!, documentId, path));
+              BillNotifier.fromMap(data, documentId, path));
     }
     return instance.collectionStream(
         path: ApiPath.Bills(shopDocumentId: shopDocumentId),
-        queryBuilder: q as Query Function(Query)?,
+        queryBuilder: q,
         builder: (data, documentId, path) =>
-            BillNotifier.fromMap(data!, documentId, path));
+            BillNotifier.fromMap(data, documentId, path));
   }
 
   @override
-  Stream<Bill> billStream({String? billDocumentId, String? shopDocumentId}) {
+  Stream<Bill> billStream({String billDocumentId, String shopDocumentId}) {
     return instance.documentStream(
         path: ApiPath.Bill(
             shopDocumentId: shopDocumentId, billId: billDocumentId),
         builder: (data, documentId) =>
-            Bill.fromMap(data!, documentId, 'sdcs/dsd'));
+            Bill.fromMap(data, documentId, 'sdcs/dsd'));
   }
 
   @override
   Stream<BillNotifier> billStreamNotifier(
-      {String? billDocumentId, String? shopDocumentId}) {
+      {String billDocumentId, String shopDocumentId}) {
     return instance.documentStream(
         path: ApiPath.Bill(
             shopDocumentId: shopDocumentId, billId: billDocumentId),
         builder: (data, documentId) =>
-            BillNotifier.fromMap(data!, documentId, 'sdcs/dsd'));
+            BillNotifier.fromMap(data, documentId, 'sdcs/dsd'));
   }
 
   @override
   Future<void> createBill(
-      {required BillNotifier? bill, required String? shopDocumentId}) {
+      {@required BillNotifier bill, @required String shopDocumentId}) {
     // print(bill.toString());
     // bill = bill.copyWith(updatedByUID: uid);
     // bill['tt'] = [323, 434];
@@ -193,43 +193,43 @@ class FirestoreDatabase extends Database {
         path: ApiPath.Bills(
           shopDocumentId: shopDocumentId,
         ),
-        data: bill!.toMap());
+        data: bill.toMap());
   }
 
   @override
   Future<void> updateBill(
-      {required BillNotifier? bill,
-      required String? documentId,
-      required String? shopDocumentId}) {
+      {@required BillNotifier bill,
+      @required String documentId,
+      @required String shopDocumentId}) {
     return instance.updateDocument(
         path: ApiPath.Bill(shopDocumentId: shopDocumentId, billId: documentId),
-        data: bill!.toMap());
+        data: bill.toMap());
   }
 
   @override
   Future<void> deleteBill(
-      {required String? documentId, required String? shopDocumentId}) {
+      {@required String documentId, @required String shopDocumentId}) {
     return instance.deleteDocument(
         path: ApiPath.Bill(shopDocumentId: shopDocumentId, billId: documentId));
   }
 
   @override
-  Stream<User> userStream({required String? uid}) {
+  Stream<User> userStream({@required String uid}) {
     return instance.documentStream(
         path: ApiPath.user(uid: uid),
-        builder: (data, documentId) => User.fromMap(data!, documentId));
+        builder: (data, documentId) => User.fromMap(data, documentId));
   }
 
   @override
-  Stream<List<User>> usersStream({q(Query query)?}) {
+  Stream<List<User>> usersStream({q(Query query)}) {
     return instance.collectionStream(
         path: ApiPath.Users(),
-        queryBuilder: q as Query Function(Query)?,
-        builder: (data, documentId, path) => User.fromMap(data!, documentId));
+        queryBuilder: q,
+        builder: (data, documentId, path) => User.fromMap(data, documentId));
   }
 
   @override
-  Future<void> updateUser({required User user}) {
+  Future<void> updateUser({User user}) {
     return instance.updateDocument(
       path: ApiPath.user(uid: user.documentId),
       data: user.toMap(),
@@ -237,26 +237,26 @@ class FirestoreDatabase extends Database {
   }
 
   @override
-  Stream<List<Customer>> customerCollectionStream({q(Query query)?}) {
+  Stream<List<Customer>> customerCollectionStream({q(Query query)}) {
     return instance.collectionGroupStream(
         path: 'customers',
-        queryBuilder: q as Query Function(Query)?,
+        queryBuilder: q,
         builder: (data, documentId, path) =>
-            Customer.fromMap(data!, documentId, path));
+            Customer.fromMap(data, documentId, path));
   }
 
   @override
   Stream<List<Customer>> customerStream({
-    q(Query query)?,
-    String? shopDocumentId,
+    q(Query query),
+    String shopDocumentId,
   }) {
     return instance.collectionStream(
         path: ApiPath.Customers(
           shopDocumentId: shopDocumentId,
         ),
-        queryBuilder: q as Query Function(Query)?,
+        queryBuilder: q,
         builder: (data, documentId, path) =>
-            Customer.fromMap(data!, documentId, path));
+            Customer.fromMap(data, documentId, path));
   }
 
   // @override

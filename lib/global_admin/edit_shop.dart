@@ -9,11 +9,11 @@ import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 import 'package:provider/provider.dart';
 
 class EditShop extends StatefulWidget {
-  final Database? database;
-  final ShopFreezedModel? shop;
+  final Database database;
+  final ShopFreezedModel shop;
   const EditShop({
-    Key? key,
-    required this.database,
+    Key key,
+    @required this.database,
     this.shop,
   }) : super(key: key);
   @override
@@ -21,17 +21,17 @@ class EditShop extends StatefulWidget {
 }
 
 class _EditShopState extends State<EditShop> {
-  String? _shopName;
-  String? _ownerName;
-  String? _ownerPhoneNumber;
-  String? _documentId;
+  String _shopName;
+  String _ownerName;
+  String _ownerPhoneNumber;
+  String _documentId;
   bool _isProcessing = true;
-  bool? _isShopActive = false;
+  bool _isShopActive = false;
   bool _isLoading = false;
-  String? _addressLine1;
-  String? _addressLine2;
-  String? _addressLine3;
-  String? _addressPinCode;
+  String _addressLine1;
+  String _addressLine2;
+  String _addressLine3;
+  String _addressPinCode;
   TextEditingController _shopNameController = TextEditingController();
   TextEditingController _addressControllerLine1 = TextEditingController();
   TextEditingController _addressControllerLine2 = TextEditingController();
@@ -51,20 +51,20 @@ class _EditShopState extends State<EditShop> {
   @override
   void initState() {
     if (widget.shop != null) {
-      _shopName = widget.shop!.shopName == null ? '' : widget.shop!.shopName;
-      _ownerName = widget.shop!.ownerName == null ? '' : widget.shop!.ownerName;
-      _ownerPhoneNumber = widget.shop!.ownerPhoneNumber == null
+      _shopName = widget.shop.shopName == null ? '' : widget.shop.shopName;
+      _ownerName = widget.shop.ownerName == null ? '' : widget.shop.ownerName;
+      _ownerPhoneNumber = widget.shop.ownerPhoneNumber == null
           ? ''
-          : widget.shop!.ownerPhoneNumber!.contains('+91')
-              ? widget.shop!.ownerPhoneNumber!.substring(3)
-              : widget.shop!.ownerPhoneNumber;
-      _shopNameController.text = widget.shop!.shopName!;
-      _documentId = widget.shop!.documentId;
-      _isShopActive = widget.shop!.isShopActive;
-      _addressControllerLine1.text = widget.shop!.address?.line_1!;
-      _addressControllerLine2.text = widget.shop!.address?.line_2!;
-      _addressControllerLine3.text = widget.shop!.address?.line_3!;
-      _addressPinCodeController.text = widget.shop!.address?.pin_code!;
+          : widget.shop.ownerPhoneNumber.contains('+91')
+              ? widget.shop.ownerPhoneNumber.substring(3)
+              : widget.shop.ownerPhoneNumber;
+      _shopNameController.text = widget.shop.shopName;
+      _documentId = widget.shop.documentId;
+      _isShopActive = widget.shop.isShopActive;
+      _addressControllerLine1.text = widget.shop.address?.line_1;
+      _addressControllerLine2.text = widget.shop.address?.line_2;
+      _addressControllerLine3.text = widget.shop.address?.line_3;
+      _addressPinCodeController.text = widget.shop.address?.pin_code;
     }
     super.initState();
   }
@@ -73,8 +73,8 @@ class _EditShopState extends State<EditShop> {
     setState(() {
       _isLoading = true;
     });
-    if (_formKey.currentState!.validate()) {
-      _ownerPhoneNumber = '+91' + _ownerPhoneNumber!;
+    if (_formKey.currentState.validate()) {
+      _ownerPhoneNumber = '+91' + _ownerPhoneNumber;
       ShopFreezedModel shop = ShopFreezedModel(
           shopName: _shopName,
           ownerName: _ownerName,
@@ -166,7 +166,7 @@ class _EditShopState extends State<EditShop> {
         // autofocus: true,
         focusNode: _ownerPhoneNumberFocus,
         validator: (v) {
-          if (v!.length < 10)
+          if (v.length < 10)
             return "Please Enter Correct Number";
           else
             return null;
@@ -326,7 +326,7 @@ class _EditShopState extends State<EditShop> {
     );
   }
 
-  String? nameValidator(String? v) {
+  String nameValidator(String v) {
     return null;
   }
 }

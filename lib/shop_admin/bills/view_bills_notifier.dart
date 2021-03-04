@@ -17,7 +17,7 @@ import 'package:intl/intl.dart';
 
 import 'edit_bill_model.dart';
 
-void _editBill({required BuildContext context, Database? database, Bill? bill}) {
+void _editBill({BuildContext context, Database database, Bill bill}) {
   Navigator.push(
       context,
       MaterialPageRoute(
@@ -28,7 +28,7 @@ void _editBill({required BuildContext context, Database? database, Bill? bill}) 
 }
 
 Future<void> _deleteBill(
-    {required BuildContext context, Database? database, Bill? bill}) async {
+    {BuildContext context, Database database, Bill bill}) async {
   showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -38,9 +38,9 @@ Future<void> _deleteBill(
               FlatButton(
                   child: Text('Yes'),
                   onPressed: () async {
-                    await database!.deleteBill(
-                        documentId: bill!.documentId,
-                        shopDocumentId: database.loggedInUser!.shopDocumentId);
+                    await database.deleteBill(
+                        documentId: bill.documentId,
+                        shopDocumentId: database.loggedInUser.shopDocumentId);
                     Navigator.of(context).pop();
                   }),
               FlatButton(
@@ -56,14 +56,14 @@ class ViewBillsNotifier extends StatefulWidget {
 }
 
 class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
-  String? _phoneNumber;
+  String _phoneNumber;
   final TextEditingController _phoneNumberController = TextEditingController();
-  String? _error;
+  String _error;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   bool _viewFilterBar = false;
-  bool? _isProcessing;
-  bool? _isShopActive;
+  bool _isProcessing;
+  bool _isShopActive;
   bool _sortbyDate = true;
   Map<String, bool> _state = new Map<String, bool>();
 
@@ -95,7 +95,7 @@ class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
     return q;
   }
 
-  Color getColor(bool isProcessing, bool? isShopActive) {
+  Color getColor(bool isProcessing, bool isShopActive) {
     if (isProcessing) return Colors.orange;
     return Colors.green;
   }
@@ -110,7 +110,7 @@ class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
           keyboardType: TextInputType.phone,
           autofocus: true,
           validator: (value) {
-            if (_error != null || value!.isEmpty) {
+            if (_error != null || value.isEmpty) {
               return 'Please enter correct Mobile Number';
             }
             return null;
@@ -128,7 +128,7 @@ class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
     );
   }
 
-  InkWell buildStringFilter({required String key, bool? value, VoidCallback? onTap}) {
+  InkWell buildStringFilter({String key, bool value, VoidCallback onTap}) {
     return InkWell(
         highlightColor: value != null && value ? Colors.green : Colors.black,
         onTap: onTap,
@@ -149,11 +149,11 @@ class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
       child: StreamBuilder<List<BillNotifier>>(
           stream: database.billsStreamNotifier(
               q: buildQuery,
-              shopDocumentId: database.loggedInUser!.shopDocumentId),
+              shopDocumentId: database.loggedInUser.shopDocumentId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.active) {
               if (snapshot.data != null) {
-                List<BillNotifier> bill = snapshot.data!;
+                List<BillNotifier> bill = snapshot.data;
                 return Expanded(
                   child: ListView.builder(
                       shrinkWrap: true,
@@ -211,15 +211,15 @@ class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
                             ],
                             child: ListTileTheme(
                               iconColor: Colors.green,
-                              key: Key(bill[index].documentId!),
+                              key: Key(bill[index].documentId),
                               contentPadding: EdgeInsets.all(4.0),
                               textColor:
-                                  getColor(bill[index].isProcessing!, null),
+                                  getColor(bill[index].isProcessing, null),
                               // iconColor: Colors.orange,
                               style: ListTileStyle.drawer,
                               child: ListTile(
                                   contentPadding: EdgeInsets.all(8.0),
-                                  key: Key(bill[index].documentId!),
+                                  key: Key(bill[index].documentId),
                                   leading: StreamBuilder<User>(
                                       stream: database.userStream(
                                           uid: bill[index].customerUID),
@@ -270,7 +270,7 @@ class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
                                                     ConnectionState.active &&
                                                 userSnapshotNew.hasData)
                                               return Text(
-                                                userSnapshotNew.data!.name ?? '',
+                                                userSnapshotNew.data.name ?? '',
                                                 style: TextStyle(fontSize: 24),
                                               );
                                             else
@@ -278,12 +278,12 @@ class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
                                           }),
                                       Text(
                                         bill[index]
-                                                .customerPhoneNumber!
+                                                .customerPhoneNumber
                                                 .contains('+91')
                                             ? bill[index]
-                                                .customerPhoneNumber!
+                                                .customerPhoneNumber
                                                 .substring(3)
-                                            : bill[index].customerPhoneNumber!,
+                                            : bill[index].customerPhoneNumber,
                                         style: TextStyle(fontSize: 22),
                                       ),
                                     ],
@@ -315,7 +315,7 @@ class _ViewBillsNotifierState extends State<ViewBillsNotifier> {
             context,
             MaterialPageRoute(
                 builder: (context) => ViewProfile(
-                      uid: userSnapshot.data!.documentId,
+                      uid: userSnapshot.data.documentId,
                     )));
       },
     );

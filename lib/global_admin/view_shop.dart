@@ -13,7 +13,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void _editShop(
-    {required BuildContext context, Database? database, ShopFreezedModel? shop}) {
+    {BuildContext context, Database database, ShopFreezedModel shop}) {
   Navigator.push(
       context,
       MaterialPageRoute(
@@ -24,7 +24,7 @@ void _editShop(
 }
 
 Future<void> _deleteShop(
-    {required BuildContext context, Database? database, ShopFreezedModel? shop}) async {
+    {BuildContext context, Database database, ShopFreezedModel shop}) async {
   showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -34,7 +34,7 @@ Future<void> _deleteShop(
               FlatButton(
                   child: Text('Yes'),
                   onPressed: () async {
-                    await database!.deleteShop(documentId: shop!.documentId);
+                    await database.deleteShop(documentId: shop.documentId);
                     Navigator.of(context).pop();
                   }),
               FlatButton(
@@ -50,14 +50,14 @@ class ViewShop extends StatefulWidget {
 }
 
 class _ViewShopState extends State<ViewShop> {
-  String? _phoneNumber;
+  String _phoneNumber;
   final TextEditingController _phoneNumberController = TextEditingController();
-  String? _error;
+  String _error;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   bool _viewFilterBar = false;
-  bool? _isProcessing;
-  bool? _isShopActive;
+  bool _isProcessing;
+  bool _isShopActive;
   Map<String, bool> _state = new Map<String, bool>();
 
   void _formReset() {
@@ -84,9 +84,9 @@ class _ViewShopState extends State<ViewShop> {
     return q;
   }
 
-  Color getColor(bool isProcessing, bool? isShopActive) {
+  Color getColor(bool isProcessing, bool isShopActive) {
     if (isProcessing) return Colors.orange;
-    if (isShopActive!) return Colors.green;
+    if (isShopActive) return Colors.green;
     return Colors.red;
   }
 
@@ -100,7 +100,7 @@ class _ViewShopState extends State<ViewShop> {
           keyboardType: TextInputType.phone,
           autofocus: true,
           validator: (value) {
-            if (_error != null || value!.isEmpty) {
+            if (_error != null || value.isEmpty) {
               return 'Please enter correct Mobile Number';
             }
             return null;
@@ -118,7 +118,7 @@ class _ViewShopState extends State<ViewShop> {
     );
   }
 
-  InkWell buildStringFilter({required String key, bool? value, VoidCallback? onTap}) {
+  InkWell buildStringFilter({String key, bool value, VoidCallback onTap}) {
     return InkWell(
         highlightColor: value != null && value ? Colors.green : Colors.black,
         onTap: onTap,
@@ -186,7 +186,7 @@ class _ViewShopState extends State<ViewShop> {
                             if (_isProcessing == null)
                               _isProcessing = true;
                             else
-                              _isProcessing = !_isProcessing!;
+                              _isProcessing = !_isProcessing;
                           });
                         }),
                     buildStringFilter(
@@ -197,7 +197,7 @@ class _ViewShopState extends State<ViewShop> {
                             if (_isShopActive == null)
                               _isShopActive = true;
                             else
-                              _isShopActive = !_isShopActive!;
+                              _isShopActive = !_isShopActive;
                           });
                         }),
                   ],
@@ -227,7 +227,7 @@ class _ViewShopState extends State<ViewShop> {
               if (snapshot.connectionState != ConnectionState.active)
                 return Center(child: CircularProgressIndicator());
               if (!snapshot.hasData) return Text('No data');
-              List<ShopFreezedModel> shop = snapshot.data!;
+              List<ShopFreezedModel> shop = snapshot.data;
               return Expanded(
                 child: RefreshIndicator(
                   onRefresh: () {
@@ -235,7 +235,7 @@ class _ViewShopState extends State<ViewShop> {
                       _viewFilterBar = !_viewFilterBar;
                     });
                     return;
-                  } as Future<void> Function(),
+                  },
                   child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: shop.length,
@@ -265,15 +265,15 @@ class _ViewShopState extends State<ViewShop> {
                           ],
                           child: ListTileTheme(
                             iconColor: Colors.green,
-                            key: Key(shop[index].documentId!),
+                            key: Key(shop[index].documentId),
                             contentPadding: EdgeInsets.all(4.0),
-                            textColor: getColor(shop[index].isProcessing!,
+                            textColor: getColor(shop[index].isProcessing,
                                 shop[index].isShopActive),
                             // iconColor: Colors.orange,
                             style: ListTileStyle.drawer,
                             child: ListTile(
                                 contentPadding: EdgeInsets.all(8.0),
-                                key: Key(shop[index].documentId!),
+                                key: Key(shop[index].documentId),
                                 leading: StreamBuilder<User>(
                                     stream: database.userStream(
                                         uid: shop[index].ownerUID),
@@ -294,7 +294,7 @@ class _ViewShopState extends State<ViewShop> {
                                                     builder: (context) =>
                                                         ViewProfile(
                                                           uid: userSnapshot
-                                                              .data!.documentId,
+                                                              .data.documentId,
                                                         )));
                                           },
                                         );
@@ -302,7 +302,7 @@ class _ViewShopState extends State<ViewShop> {
                                         return Icon(Icons.photo_camera);
                                     }),
                                 title: Text(
-                                  shop[index].shopName!,
+                                  shop[index].shopName,
                                   style: TextStyle(fontSize: 24),
                                 ),
                                 subtitle: Column(
@@ -317,7 +317,7 @@ class _ViewShopState extends State<ViewShop> {
                                                   ConnectionState.active &&
                                               userSnapshotNew.hasData)
                                             return Text(
-                                              userSnapshotNew.data!.name ?? '',
+                                              userSnapshotNew.data.name ?? '',
                                               style: TextStyle(fontSize: 24),
                                             );
                                           else
@@ -325,12 +325,12 @@ class _ViewShopState extends State<ViewShop> {
                                         }),
                                     Text(
                                       shop[index]
-                                              .ownerPhoneNumber!
+                                              .ownerPhoneNumber
                                               .contains('+91')
                                           ? shop[index]
-                                              .ownerPhoneNumber!
+                                              .ownerPhoneNumber
                                               .substring(3)
-                                          : shop[index].ownerPhoneNumber!,
+                                          : shop[index].ownerPhoneNumber,
                                       style: TextStyle(fontSize: 24),
                                     ),
                                   ],

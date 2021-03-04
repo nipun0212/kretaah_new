@@ -5,19 +5,19 @@ import 'package:meta/meta.dart';
 // enum GST { gst_0, gst_5, gst_6, gst_12, gst_28 }
 
 class ItemNotifier with ChangeNotifier {
-  String? name;
+  String name;
   String description;
-  int? gst_percentage;
+  int gst_percentage;
   double rate;
   double cgst;
   double sgst;
   double utgst;
   double igst;
   double quantity;
-  double? rateAfterGST;
+  double rateAfterGST;
   double totalAmount;
-  double? totalGST;
-  String? error;
+  double totalGST;
+  String error;
   ItemNotifier({
     this.name,
     this.description = '',
@@ -57,9 +57,9 @@ class ItemNotifier with ChangeNotifier {
     // print('Path = $path');
     String name = data['name'] ?? '';
     String description = data['description'] ?? '';
-    String? error = data['error'] ?? null;
+    String error = data['error'] ?? null;
     double rate = data['rate'].toDouble() ?? 0.0;
-    int? gst_percentage = data['gst_percentage'];
+    int gst_percentage = data['gst_percentage'];
     double cgst = data['cgst'].toDouble() ?? 0;
     double sgst = data['sgst'].toDouble() ?? 0;
     double utgst = data['utgst'].toDouble() ?? 0;

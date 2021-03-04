@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 
 class Setting extends StatefulWidget {
-  final SettingChangeNotifierModel? model;
+  final SettingChangeNotifierModel model;
 
   @override
   _SettingState createState() => _SettingState();
@@ -38,13 +38,13 @@ class _SettingState extends State<Setting> {
   // SettingModel model;
   TextEditingController _rewardPercentageController = TextEditingController();
   TextEditingController _defaultGstSettingController = TextEditingController();
-  SettingChangeNotifierModel? model;
+  SettingChangeNotifierModel model;
   @override
   void initState() {
     model = widget.model;
     _rewardPercentageController.text =
-        model!.settingModel?.reward_percentage?.toString();
-    _defaultGstSettingController.text = model!.settingModel?.default_gst_setting!;
+        model.settingModel?.reward_percentage?.toString();
+    _defaultGstSettingController.text = model.settingModel?.default_gst_setting;
     // initializeModel();
 
     super.initState();
@@ -76,7 +76,7 @@ class _SettingState extends State<Setting> {
     return CustomCard(
       child: StreamBuilder<SettingModel>(
           stream: database.rewardSettingStream(
-              shopDocumentId: database.loggedInUser!.shopDocumentId),
+              shopDocumentId: database.loggedInUser.shopDocumentId),
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.active)
               return Center(child: CircularProgressIndicator());
@@ -95,7 +95,7 @@ class _SettingState extends State<Setting> {
                       FilteringTextInputFormatter.digitsOnly,
                     ],
                     validator: (v) {
-                      if (v!.length < 3)
+                      if (v.length < 3)
                         return 'Please enter valid reward percentage';
                       return null;
                     },
@@ -103,7 +103,7 @@ class _SettingState extends State<Setting> {
                     keyboardType: TextInputType.phone,
                     decoration: FormInput.inputDecoration(),
                     onChanged: (v) {
-                      model!.updateRewardPercentage(v);
+                      model.updateRewardPercentage(v);
                     },
                   ),
                 ),
@@ -113,17 +113,17 @@ class _SettingState extends State<Setting> {
                     Text('Default GST', style: TextStyle(fontSize: 16)),
                     DropdownButton(
                         items: Gst()
-                            .gst_options!
+                            .gst_options
                             .entries
                             .map((e) => DropdownMenuItem(
                                 key: Key(e.key),
                                 value: e.key,
                                 child: Text(e.key)))
                             .toList(),
-                        onChanged: (dynamic v) async {
-                          model!.updateGST(v);
+                        onChanged: (v) async {
+                          model.updateGST(v);
                         },
-                        value: model!.settingModel!.default_gst_setting),
+                        value: model.settingModel.default_gst_setting),
                   ],
                 ),
                 RaisedButton(
@@ -138,7 +138,7 @@ class _SettingState extends State<Setting> {
   }
 
   void submit(BuildContext context) {
-    model!.submit();
+    model.submit();
     var snackbar = SnackBar(
       content: Text('Setting Update'),
     );

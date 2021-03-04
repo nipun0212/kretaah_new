@@ -7,36 +7,36 @@ import 'package:kretaa/shop_admin/state/setting_state.dart';
 
 class SettingChangeNotifierModel extends ChangeNotifier {
   final Database database;
-  SettingModel? settingModel;
+  SettingModel settingModel;
   bool isLoading = false;
 
-  SettingChangeNotifierModel({required this.database}) {
+  SettingChangeNotifierModel({@required this.database}) {
     init();
   }
 
   void init() async {
     this.settingModel = await (await database
         .rewardSettingStream(
-            shopDocumentId: database.loggedInUser!.shopDocumentId)
+            shopDocumentId: database.loggedInUser.shopDocumentId)
         .first);
     notifyListeners();
   }
 
-  void updateGST(String? gst_setting) async {
+  void updateGST(String gst_setting) async {
     this.settingModel =
-        this.settingModel!.copyWith(default_gst_setting: gst_setting);
+        this.settingModel.copyWith(default_gst_setting: gst_setting);
     notifyListeners();
   }
 
   void updateRewardPercentage(String percentage) {
     this.settingModel =
-        this.settingModel!.copyWith(reward_percentage: int.parse(percentage));
+        this.settingModel.copyWith(reward_percentage: int.parse(percentage));
   }
 
   void submit() {
     this.isLoading = true;
     database.updateRewardSetting(
-        shopDocumentId: database.loggedInUser!.shopDocumentId,
+        shopDocumentId: database.loggedInUser.shopDocumentId,
         rewardSettingDoc: this.settingModel);
     this.isLoading = false;
   }

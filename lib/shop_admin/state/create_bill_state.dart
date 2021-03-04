@@ -11,21 +11,21 @@ abstract class CreateBillState with _$CreateBillState {
   // const factory CreateBillState.error(String errorText) = _Error;
   // const factory CreateBillState.loading() = _Loading;
   const factory CreateBillState({
-    String? documentId,
-    String? description,
-    List<CreateItemState>? item,
-    int? id,
-    int? rewardPointsGiven,
-    int? redeemRewardPoints,
-    bool? isProcessing,
-    String? customerPhoneNumber,
-    double? amount,
-    String? updatedByUID,
-    String? customerUID,
+    String documentId,
+    String description,
+    List<CreateItemState> item,
+    int id,
+    int rewardPointsGiven,
+    int redeemRewardPoints,
+    bool isProcessing,
+    String customerPhoneNumber,
+    double amount,
+    String updatedByUID,
+    String customerUID,
     dynamic updatedOn,
-    String? shopDocumentId,
-    String? otp,
-    String? error,
+    String shopDocumentId,
+    String otp,
+    String error,
   }) = _Bill;
 
   // factory CreateBillState.fromJson(Map<String, dynamic> json) =>

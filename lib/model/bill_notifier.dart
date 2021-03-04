@@ -3,21 +3,21 @@ import 'package:kretaa/model/item.dart';
 import 'package:meta/meta.dart';
 
 class BillNotifier with ChangeNotifier {
-  String? documentId;
-  String? description;
-  List<ItemNotifier>? item;
-  int? id;
-  int? rewardPointsGiven;
-  int? redeemRewardPoints;
-  bool? isProcessing;
-  String? customerPhoneNumber;
-  double? amount;
-  String? updatedByUID;
-  String? customerUID;
+  String documentId;
+  String description;
+  List<ItemNotifier> item;
+  int id;
+  int rewardPointsGiven;
+  int redeemRewardPoints;
+  bool isProcessing;
+  String customerPhoneNumber;
+  double amount;
+  String updatedByUID;
+  String customerUID;
   dynamic updatedOn;
-  String? shopDocumentId;
-  String? otp;
-  String? error;
+  String shopDocumentId;
+  String otp;
+  String error;
   BillNotifier(
       {this.documentId,
       this.id,
@@ -37,9 +37,9 @@ class BillNotifier with ChangeNotifier {
   Map<String, dynamic> toMap() {
     print('Item new = $item');
     List<Map<String, dynamic>> itemMap = List<Map<String, dynamic>>();
-    for (var i = 0; i < item!.length; i++) {
-      print('itemr i = ${item![i].toMap()}');
-      itemMap.add(item![i].toMap());
+    for (var i = 0; i < item.length; i++) {
+      print('itemr i = ${item[i].toMap()}');
+      itemMap.add(item[i].toMap());
     }
 
     var x = {
@@ -71,16 +71,16 @@ class BillNotifier with ChangeNotifier {
         itemObject.add(ItemNotifier.fromMap(data['item'][i]));
       }
 
-    int? id = data['id'];
-    String? description = data['description'];
-    String? error = data['error'];
-    double? amount = data['amount'];
-    bool? isProcessing = data['isProcessing'];
-    String? customerPhoneNumber = data['customerPhoneNumber'];
-    String? updatedByUID = data['updatedByUID'];
-    String? customerUID = data['customerUID'];
-    int? rewardPointsGiven = data['rewardPointsGiven'];
-    int? redeemRewardPoints = data['redeemRewardPoints'];
+    int id = data['id'];
+    String description = data['description'];
+    String error = data['error'];
+    double amount = data['amount'];
+    bool isProcessing = data['isProcessing'];
+    String customerPhoneNumber = data['customerPhoneNumber'];
+    String updatedByUID = data['updatedByUID'];
+    String customerUID = data['customerUID'];
+    int rewardPointsGiven = data['rewardPointsGiven'];
+    int redeemRewardPoints = data['redeemRewardPoints'];
     dynamic updatedOn = data['updatedOn'];
     List<ItemNotifier> item = itemObject;
     final shopDocumentId = path.split('/')[1];
@@ -106,27 +106,27 @@ class BillNotifier with ChangeNotifier {
   }
 
   BillNotifier copyWith(
-      {String? documentId,
-      String? description,
-      String? error,
-      String? id,
-      double? amount,
-      String? isProcessing,
-      String? updatedByUID,
-      String? customerPhoneNumber,
-      String? customerUID,
+      {String documentId,
+      String description,
+      String error,
+      String id,
+      double amount,
+      String isProcessing,
+      String updatedByUID,
+      String customerPhoneNumber,
+      String customerUID,
       dynamic updatedOn,
-      int? rewardPointsGiven,
-      int? redeemRewardPoints,
-      String? shopId,
-      String? otp,
-      List<ItemNotifier>? item}) {
+      int rewardPointsGiven,
+      int redeemRewardPoints,
+      String shopId,
+      String otp,
+      List<ItemNotifier> item}) {
     return BillNotifier(
         documentId: documentId ?? this.documentId,
         description: description ?? this.description,
         error: error ?? this.error,
-        id: id as int? ?? this.id,
-        isProcessing: isProcessing as bool? ?? this.isProcessing,
+        id: id ?? this.id,
+        isProcessing: isProcessing ?? this.isProcessing,
         amount: amount ?? this.amount,
         updatedByUID: updatedByUID ?? this.updatedByUID,
         customerUID: customerUID ?? this.customerUID,
@@ -140,26 +140,26 @@ class BillNotifier with ChangeNotifier {
   }
 
   void updateWith(
-      {String? documentId,
-      String? description,
-      String? error,
-      String? id,
-      double? amount,
-      String? isProcessing,
-      String? updatedByUID,
-      String? customerPhoneNumber,
-      String? customerUID,
+      {String documentId,
+      String description,
+      String error,
+      String id,
+      double amount,
+      String isProcessing,
+      String updatedByUID,
+      String customerPhoneNumber,
+      String customerUID,
       dynamic updatedOn,
-      int? rewardPointsGiven,
-      int? redeemRewardPoints,
-      String? shopId,
-      String? otp,
-      List<ItemNotifier>? item}) {
+      int rewardPointsGiven,
+      int redeemRewardPoints,
+      String shopId,
+      String otp,
+      List<ItemNotifier> item}) {
     this.documentId = documentId ?? this.documentId;
     this.description = description ?? this.description;
     this.error = error ?? this.error;
-    this.id = id as int? ?? this.id;
-    this.isProcessing = isProcessing as bool? ?? this.isProcessing;
+    this.id = id ?? this.id;
+    this.isProcessing = isProcessing ?? this.isProcessing;
     this.amount = amount ?? this.amount;
     this.updatedByUID = updatedByUID ?? this.updatedByUID;
     this.customerUID = customerUID ?? this.customerUID;

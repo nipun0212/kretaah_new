@@ -6,16 +6,16 @@ import 'package:kretaa/services/auth.dart';
 import 'package:provider/provider.dart';
 
 class Otp extends StatefulWidget {
-  const Otp({Key? key, this.phoneNumber, this.verificationId}) : super(key: key);
+  const Otp({Key key, this.phoneNumber, this.verificationId}) : super(key: key);
 
-  final String? phoneNumber;
-  final String? verificationId;
+  final String phoneNumber;
+  final String verificationId;
   @override
   _OtpState createState() => _OtpState();
 }
 
 class _OtpState extends State<Otp> {
-  String? _otp;
+  String _otp;
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
   @override
@@ -67,13 +67,13 @@ class _OtpState extends State<Otp> {
     setState(() {
       isLoading = true;
     });
-    if (!_formKey.currentState!.validate())
+    if (!_formKey.currentState.validate())
       setState(() {
         isLoading = false;
       });
     if (!(await auth.verifyOTP(widget.verificationId, _otp))) {
-      _formKey.currentState!.reset();
-      _formKey.currentState!.validate();
+      _formKey.currentState.reset();
+      _formKey.currentState.validate();
       setState(() {
         isLoading = false;
       });
@@ -90,7 +90,7 @@ class _OtpState extends State<Otp> {
         maxLines: 1,
         autofocus: true,
         validator: (v) {
-          if (v!.length < 6) return 'Please enter valid otp';
+          if (v.length < 6) return 'Please enter valid otp';
           return null;
         },
         onChanged: (v) {

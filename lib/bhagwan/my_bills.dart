@@ -8,9 +8,9 @@ import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 import 'package:provider/provider.dart';
 
 class MyBills extends StatelessWidget {
-  const MyBills({Key? key, this.shopDocumentId}) : super(key: key);
+  const MyBills({Key key, this.shopDocumentId}) : super(key: key);
   // final String billDocumentId;
-  final String? shopDocumentId;
+  final String shopDocumentId;
   // Query buildQuery(Query q) {
   //   q = q.where('customerUID', isEqualTo: 'Bfrnla6oMzR9UVUeWLthPqku6gT2');
   //   // if (shopDocumentId != null)
@@ -32,13 +32,13 @@ class MyBills extends StatelessWidget {
             stream: database.billsStream(
                 q: (q) => q
                     .where('customerUID',
-                        isEqualTo: database.loggedInUser!.documentId)
+                        isEqualTo: database.loggedInUser.documentId)
                     .orderBy('updatedOn', descending: true),
                 collectionGroup: true),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.data != null) {
-                  List<Bill> bill = snapshot.data!;
+                  List<Bill> bill = snapshot.data;
                   print('Bill $bill');
                   // print('Path = '${bill[0].documentId})
                   return SliverList(
@@ -71,15 +71,15 @@ class MyBills extends StatelessWidget {
                                           borderColor: Colors.black54,
                                           borderWidth: 2.0,
                                         ),
-                                        title: Text(((snapshot.data?.shopName !=
+                                        title: Text((snapshot.data?.shopName !=
                                                 null)
-                                            ? snapshot.data?.shopName!
-                                            : ((snapshot.data
+                                            ? snapshot.data?.shopName
+                                            : (snapshot.data
                                                         ?.ownerPhoneNumber !=
                                                     null)
                                                 ? snapshot
-                                                    .data?.ownerPhoneNumber!
-                                                : '')!)!),
+                                                    .data?.ownerPhoneNumber
+                                                : ''),
                                         subtitle:
                                             // Text(bill[index].amount.toString())),
                                             Text(

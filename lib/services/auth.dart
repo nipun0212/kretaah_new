@@ -23,10 +23,10 @@ import 'package:kretaa/util/util.dart';
 // }
 
 abstract class AuthBase {
-  void sendOTP(String? phoneNumber, firebase_auth.PhoneCodeSent codeSent,
+  void sendOTP(String phoneNumber, firebase_auth.PhoneCodeSent codeSent,
       firebase_auth.PhoneVerificationFailed verificationFailed);
-  Future<bool> verifyOTP(String? verificationId, String? otp);
-  Stream<firebase_auth.User?> get onAuthStateChanged;
+  Future<bool> verifyOTP(String verificationId, String otp);
+  Stream<firebase_auth.User> get onAuthStateChanged;
   void signOut();
 }
 
@@ -60,14 +60,14 @@ abstract class AuthBase {
 class Auth implements AuthBase {
   final _firebaseAuth = firebase_auth.FirebaseAuth.instance;
   @override
-  Stream<firebase_auth.User?> get onAuthStateChanged {
+  Stream<firebase_auth.User> get onAuthStateChanged {
     return _firebaseAuth.authStateChanges();
   }
 
   @override
-  void sendOTP(String? phoneNumber, firebase_auth.PhoneCodeSent codeSent,
+  void sendOTP(String phoneNumber, firebase_auth.PhoneCodeSent codeSent,
       firebase_auth.PhoneVerificationFailed verificationFailed) {
-    phoneNumber = Util.parsePhoneNumber(phoneNumber!);
+    phoneNumber = Util.parsePhoneNumber(phoneNumber);
     _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         timeout: Duration(seconds: 30),
@@ -78,11 +78,11 @@ class Auth implements AuthBase {
   }
 
   @override
-  Future<bool> verifyOTP(String? verificationId, String? otp) async {
+  Future<bool> verifyOTP(String verificationId, String otp) async {
     firebase_auth.AuthCredential credential =
         firebase_auth.PhoneAuthProvider.credential(
-      verificationId: verificationId!,
-      smsCode: otp!,
+      verificationId: verificationId,
+      smsCode: otp,
     );
     firebase_auth.UserCredential result;
     try {
@@ -91,7 +91,7 @@ class Auth implements AuthBase {
       print('Error while verifying otp --> $e');
       return false;
     }
-    if (result.user!.uid != null) return true;
+    if (result.user.uid != null) return true;
     return false;
   }
 

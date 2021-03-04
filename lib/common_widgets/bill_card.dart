@@ -20,15 +20,15 @@ import 'package:pdf/widgets.dart' as pw;
 
 class BillCard extends StatelessWidget {
   const BillCard(
-      {Key? key,
+      {Key key,
       this.uid,
-      required this.billDocumentId,
-      required this.shopDocumentId})
+      @required this.billDocumentId,
+      @required this.shopDocumentId})
       : super(key: key);
 
-  final String? uid;
-  final String? billDocumentId;
-  final String? shopDocumentId;
+  final String uid;
+  final String billDocumentId;
+  final String shopDocumentId;
 
   Future<void> _chooseAvatar(BuildContext context) async {
     try {
@@ -36,7 +36,7 @@ class BillCard extends StatelessWidget {
       final imagePicker =
           Provider.of<ImagePickerService>(context, listen: false);
       final File file =
-          File((await imagePicker.pickImage(source: ImageSource.gallery))!.path);
+          File((await imagePicker.pickImage(source: ImageSource.gallery)).path);
       if (file != null) {
         // 2. Upload to storage
         final storage =
@@ -45,7 +45,7 @@ class BillCard extends StatelessWidget {
         // 3. Save url to Firestore
         final database = Provider.of<Database>(context, listen: false);
         User user = (await database
-            .userStream(uid: database.loggedInUser!.documentId)
+            .userStream(uid: database.loggedInUser.documentId)
             .first);
         user = user.copyWith(photoURL: downloadUrl);
         await database.updateUser(user: user);
@@ -101,7 +101,7 @@ class BillCard extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active &&
                   snapshot.hasData) {
-                ShopFreezedModel shop = snapshot.data!;
+                ShopFreezedModel shop = snapshot.data;
                 print('Firestore user : ${snapshot.data}');
                 return Column(
                   children: <Widget>[
@@ -113,7 +113,7 @@ class BillCard extends StatelessWidget {
                           width: 42,
                         ),
                         Text(
-                          '${shop.shopName!.toUpperCase()}',
+                          '${shop.shopName.toUpperCase()}',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
@@ -122,7 +122,7 @@ class BillCard extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 8.0),
-                    Text('${shop.ownerPhoneNumber!.substring(3)}',
+                    Text('${shop.ownerPhoneNumber.substring(3)}',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 24)),
                     SizedBox(height: 16.0),
@@ -240,7 +240,7 @@ class BillCard extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active &&
                   snapshot.hasData) {
-                User user = snapshot.data!;
+                User user = snapshot.data;
                 print('Firestore user : ${snapshot.data}');
                 return Column(
                   children: <Widget>[
@@ -278,7 +278,7 @@ class BillCard extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 8.0),
-                    Text('${user.phoneNumber!.substring(3)}',
+                    Text('${user.phoneNumber.substring(3)}',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 24)),
                     SizedBox(height: 16.0),

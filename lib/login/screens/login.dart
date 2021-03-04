@@ -12,13 +12,13 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  String? _phoneNumber;
+  String _phoneNumber;
   bool _isLoading = false;
   // String _prefix = '+';
   // String _countryCode = '91';
-  String? _error;
+  String _error;
   final _formKey = GlobalKey<FormState>();
-  FocusNode? _phoneNumberFocus;
+  FocusNode _phoneNumberFocus;
 
   @override
   void initState() {
@@ -30,12 +30,12 @@ class _LoginState extends State<Login> {
   @override
   void dispose() {
     // Clean up the focus node when the Form is disposed.
-    _phoneNumberFocus!.dispose();
+    _phoneNumberFocus.dispose();
 
     super.dispose();
   }
 
-  void codeSent(String verificationId, [int? forceResendingToken]) {
+  void codeSent(String verificationId, [int forceResendingToken]) {
     setState(() {
       _isLoading = false;
     });
@@ -53,7 +53,7 @@ class _LoginState extends State<Login> {
     setState(() {
       _isLoading = false;
       _error = e.message;
-      _formKey.currentState!.validate();
+      _formKey.currentState.validate();
       _error = null;
     });
   }
@@ -154,7 +154,7 @@ class _LoginState extends State<Login> {
 
   void _sendOTP(AuthBase auth) {
     if (_isLoading) return;
-    if (!(_formKey.currentState!.validate())) return;
+    if (!(_formKey.currentState.validate())) return;
     print('phone = $_phoneNumber');
     setState(() {
       _isLoading = true;
@@ -174,7 +174,7 @@ class _LoginState extends State<Login> {
           focusNode: _phoneNumberFocus,
           textInputAction: TextInputAction.send,
           validator: (value) {
-            if (_error != null || value!.isEmpty) {
+            if (_error != null || value.isEmpty) {
               return _error;
             }
             if (value.length < 10)
