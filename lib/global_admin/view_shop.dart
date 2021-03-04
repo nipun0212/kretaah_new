@@ -7,11 +7,13 @@ import 'package:kretaa/common/view_profile.dart';
 import 'package:kretaa/model/user.dart';
 import 'package:kretaa/model/shop.dart';
 import 'package:kretaa/services/database.dart';
+import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void _editShop({BuildContext context, Database database, Shop shop}) {
+void _editShop(
+    {BuildContext context, Database database, ShopFreezedModel shop}) {
   Navigator.push(
       context,
       MaterialPageRoute(
@@ -22,7 +24,7 @@ void _editShop({BuildContext context, Database database, Shop shop}) {
 }
 
 Future<void> _deleteShop(
-    {BuildContext context, Database database, Shop shop}) async {
+    {BuildContext context, Database database, ShopFreezedModel shop}) async {
   showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -219,13 +221,13 @@ class _ViewShopState extends State<ViewShop> {
               ],
             ),
           ),
-        StreamBuilder<List<Shop>>(
+        StreamBuilder<List<ShopFreezedModel>>(
             stream: database.shopStream(q: (buildQuery)),
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.active)
                 return Center(child: CircularProgressIndicator());
               if (!snapshot.hasData) return Text('No data');
-              List<Shop> shop = snapshot.data;
+              List<ShopFreezedModel> shop = snapshot.data;
               return Expanded(
                 child: RefreshIndicator(
                   onRefresh: () {

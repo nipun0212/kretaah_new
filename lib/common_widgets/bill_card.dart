@@ -11,6 +11,7 @@ import 'package:kretaa/services/auth.dart';
 import 'package:kretaa/services/database.dart';
 import 'package:kretaa/services/firebase_storage_service.dart';
 import 'package:kretaa/services/image_picker_service.dart';
+import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -95,12 +96,12 @@ class BillCard extends StatelessWidget {
       appBar: CustomAppBar(title: 'Bills', context: context).buildAppBar(auth),
       body: Container(
         // color: Colors.yellow,
-        child: StreamBuilder<Shop>(
+        child: StreamBuilder<ShopFreezedModel>(
             stream: database.shopDocumentStream(shopId: shopDocumentId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active &&
                   snapshot.hasData) {
-                Shop shop = snapshot.data;
+                ShopFreezedModel shop = snapshot.data;
                 print('Firestore user : ${snapshot.data}');
                 return Column(
                   children: <Widget>[

@@ -11,6 +11,7 @@ import 'package:kretaa/model/user.dart';
 import 'package:kretaa/model/setting_doc.dart';
 import 'package:kretaa/services/database.dart';
 import 'package:kretaa/shop_admin/bills/edit_bill_model.dart';
+import 'package:kretaa/shop_admin/state/bill_freezed_model.dart';
 import 'package:kretaa/shop_admin/state/gst_state.dart';
 import 'package:kretaa/util/util.dart';
 import 'package:provider/provider.dart';
@@ -118,7 +119,7 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
       _itemQuantityController.add(TextEditingController(text: 1.toString()));
       _itemGSTController.add(TextEditingController());
     }
-    loadIntialData();
+    // loadIntialData();
     if (widget.previousModel != null) {
       model.updateWith();
     }
@@ -126,12 +127,12 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
     super.initState();
   }
 
-  void loadIntialData() async {
-    // widget.bill.addItem();
-    await model.setRewardPoints();
-    // await model.setGST();
-    // print('bill reqae= ${await widget.bill.setRewardPoint()}');
-  }
+  // void loadIntialData() async {
+  //   // widget.bill.addItem();
+  //   await model.setRewardPoints();
+  //   // await model.setGST();
+  //   // print('bill reqae= ${await widget.bill.setRewardPoint()}');
+  // }
 
   // @override
   // Widget build(BuildContext context) {
@@ -212,8 +213,11 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (model.bill.item == null) model.addItem();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (model.bill.item == null) {
+        await model.setRewardPoints();
+        model.addItem();
+      }
     });
     var database = widget.database;
     if (database == null)
@@ -540,9 +544,9 @@ class _EditBillNotifierState extends State<EditBillNotifier> {
                         onChanged: (quantity) {
                           if (quantity.isNotEmpty) {
                             model.bill.item[index].quantity =
-                                int.parse(quantity);
+                                double.parse(quantity);
                             model.updateItem(
-                                quantity: int.parse(quantity), index: index);
+                                quantity: double.parse(quantity), index: index);
                           }
 
                           // List<ItemNotifier> itemTemp = widget.bill.item;

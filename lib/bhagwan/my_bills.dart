@@ -4,6 +4,7 @@ import 'package:kretaa/common_widgets/bill_card.dart';
 import 'package:kretaa/model/bill.dart';
 import 'package:kretaa/model/shop.dart';
 import 'package:kretaa/services/database.dart';
+import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 import 'package:provider/provider.dart';
 
 class MyBills extends StatelessWidget {
@@ -44,7 +45,7 @@ class MyBills extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate((context, index) {
                       return Column(
                         children: [
-                          StreamBuilder<Shop>(
+                          StreamBuilder<ShopFreezedModel>(
                               stream: database.shopDocumentStream(
                                   shopId: bill[index].shopDocumentId),
                               builder: (context, snapshot) {

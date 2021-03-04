@@ -39,7 +39,7 @@ class _ShopAdminHomeState extends State<ShopAdminHome> {
       ViewBillsNotifier(),
       CustomerList(),
       Setting.create(context, 'ddd'),
-      ViewPdf()
+      // ViewPdf()
     ];
     return Scaffold(
       drawer: Drawer(

@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:kretaa/model/bill_notifier.dart';
 import 'package:kretaa/model/gst.dart';
 import 'package:kretaa/model/item.dart';
-import 'package:kretaa/model/setting_doc.dart';
 import 'package:kretaa/services/database.dart';
 import 'package:kretaa/shop_admin/state/setting_model.dart';
-import 'package:kretaa/shop_admin/state/setting_state.dart';
 
 class ValidationItem {
   final String value;
@@ -32,7 +30,9 @@ class EditBillModel with ChangeNotifier {
       this.rewardPercentage,
       this.otp,
       this.gstoptions,
-      this.gstIncluded = true});
+      this.gstIncluded = true}) {
+    // setRewardPoints();
+  }
 
   void updateWith(
       {String documentId,
@@ -65,9 +65,10 @@ class EditBillModel with ChangeNotifier {
   }
 
   void updateAllItem() {
-    for (int i = 0; i < bill.item.length; i++) {
-      updateItem(index: i);
-    }
+    if (bill.item != null)
+      for (int i = 0; i < bill.item.length; i++) {
+        updateItem(index: i);
+      }
   }
 
   void changePhoneNumber(String value) {
@@ -85,7 +86,7 @@ class EditBillModel with ChangeNotifier {
     String name,
     String description,
     double rate,
-    int quantity,
+    double quantity,
     int gst_percentage,
   }) {
     ItemNotifier item = this.bill.item[index];
@@ -132,6 +133,7 @@ class EditBillModel with ChangeNotifier {
 
     int rewardPercentage = rewardSettingStream.reward_percentage;
     String default_gst_setting = rewardSettingStream.default_gst_setting;
+    // updateItem(index: null)
     updateWith(
         rewardPercentage: rewardPercentage,
         default_gst_setting: default_gst_setting);

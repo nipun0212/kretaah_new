@@ -4,11 +4,13 @@ import 'package:kretaa/common_widgets/custom_card.dart';
 import 'package:kretaa/common_widgets/form_input.dart';
 import 'package:kretaa/model/shop.dart';
 import 'package:kretaa/services/database.dart';
+import 'package:kretaa/shop_admin/state/address_freezed_model.dart';
+import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 import 'package:provider/provider.dart';
 
 class EditShop extends StatefulWidget {
   final Database database;
-  final Shop shop;
+  final ShopFreezedModel shop;
   const EditShop({
     Key key,
     @required this.database,
@@ -26,12 +28,26 @@ class _EditShopState extends State<EditShop> {
   bool _isProcessing = true;
   bool _isShopActive = false;
   bool _isLoading = false;
+  String _addressLine1;
+  String _addressLine2;
+  String _addressLine3;
+  String _addressPinCode;
   TextEditingController _shopNameController = TextEditingController();
+  TextEditingController _addressControllerLine1 = TextEditingController();
+  TextEditingController _addressControllerLine2 = TextEditingController();
+  TextEditingController _addressControllerLine3 = TextEditingController();
+  TextEditingController _addressPinCodeController = TextEditingController();
+
   FocusNode _shopNameFocus = FocusNode();
   FocusNode _ownerNameFocus = FocusNode();
   FocusNode _ownerPhoneNumberFocus = FocusNode();
+  FocusNode _addressFocusLine1 = FocusNode();
+  FocusNode _addressFocusLine2 = FocusNode();
+  FocusNode _addressFocusLine3 = FocusNode();
+  FocusNode _addressFocusPinCode = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     if (widget.shop != null) {
@@ -45,6 +61,10 @@ class _EditShopState extends State<EditShop> {
       _shopNameController.text = widget.shop.shopName;
       _documentId = widget.shop.documentId;
       _isShopActive = widget.shop.isShopActive;
+      _addressControllerLine1.text = widget.shop.address?.line_1;
+      _addressControllerLine2.text = widget.shop.address?.line_2;
+      _addressControllerLine3.text = widget.shop.address?.line_3;
+      _addressPinCodeController.text = widget.shop.address?.pin_code;
     }
     super.initState();
   }
@@ -55,12 +75,17 @@ class _EditShopState extends State<EditShop> {
     });
     if (_formKey.currentState.validate()) {
       _ownerPhoneNumber = '+91' + _ownerPhoneNumber;
-      Shop shop = Shop(
+      ShopFreezedModel shop = ShopFreezedModel(
           shopName: _shopName,
           ownerName: _ownerName,
           ownerPhoneNumber: _ownerPhoneNumber,
           isShopActive: _isShopActive,
-          isProcessing: _isProcessing);
+          isProcessing: _isProcessing,
+          address: AddressFreezedModel(
+              line_1: _addressLine1,
+              line_2: _addressLine2,
+              line_3: _addressLine3,
+              pin_code: _addressPinCode));
       // shop.copyWith(state: 'processing');
       if (_documentId == null)
         database.createShop(shop: shop);
@@ -110,6 +135,7 @@ class _EditShopState extends State<EditShop> {
                   height: 30,
                 ),
                 buildPhoneNumberInput(database),
+                buildAddressInput(),
                 Checkbox(
                   activeColor: Colors.green,
                   onChanged: (v) {
@@ -198,6 +224,105 @@ class _EditShopState extends State<EditShop> {
         },
         inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
       ),
+    );
+  }
+
+  Widget buildAddressInput() {
+    return Column(
+      children: [
+        FormInput(
+          name: 'Address Line1',
+          textFormField: TextFormField(
+            // initialValue: _shopName != null ? _shopName : '',
+            controller: _addressControllerLine1,
+            keyboardType: TextInputType.text,
+            decoration: FormInput.inputDecoration(),
+            autofocus: true,
+            focusNode: _addressFocusLine1,
+            textInputAction: TextInputAction.next,
+            validator: nameValidator,
+            onEditingComplete: () {
+              if (nameValidator(_addressControllerLine1.text) == null)
+                FocusScope.of(context).requestFocus(_addressFocusLine2);
+            },
+            onChanged: (addressLine1) {
+              setState(() {
+                _addressLine1 = addressLine1;
+              });
+            },
+            inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
+          ),
+        ),
+        FormInput(
+          name: 'Address Line2',
+          textFormField: TextFormField(
+            // initialValue: _shopName != null ? _shopName : '',
+            controller: _addressControllerLine2,
+            keyboardType: TextInputType.text,
+            decoration: FormInput.inputDecoration(),
+            autofocus: true,
+            focusNode: _addressFocusLine2,
+            textInputAction: TextInputAction.next,
+            validator: nameValidator,
+            onEditingComplete: () {
+              if (nameValidator(_addressControllerLine2.text) == null)
+                FocusScope.of(context).requestFocus(_addressFocusLine3);
+            },
+            onChanged: (addressLine2) {
+              setState(() {
+                _addressLine2 = addressLine2;
+              });
+            },
+            inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
+          ),
+        ),
+        FormInput(
+          name: 'Address Line3',
+          textFormField: TextFormField(
+            // initialValue: _shopName != null ? _shopName : '',
+            controller: _addressControllerLine3,
+            keyboardType: TextInputType.text,
+            decoration: FormInput.inputDecoration(),
+            autofocus: true,
+            focusNode: _addressFocusLine3,
+            textInputAction: TextInputAction.next,
+            validator: nameValidator,
+            onEditingComplete: () {
+              if (nameValidator(_addressControllerLine3.text) == null)
+                FocusScope.of(context).requestFocus(_addressFocusPinCode);
+            },
+            onChanged: (addressLine3) {
+              setState(() {
+                _addressLine3 = addressLine3;
+              });
+            },
+            inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
+          ),
+        ),
+        FormInput(
+          name: 'Pin Code',
+          textFormField: TextFormField(
+            // initialValue: _shopName != null ? _shopName : '',
+            controller: _addressPinCodeController,
+            keyboardType: TextInputType.text,
+            decoration: FormInput.inputDecoration(),
+            autofocus: true,
+            focusNode: _addressFocusPinCode,
+            textInputAction: TextInputAction.next,
+            validator: nameValidator,
+            // onEditingComplete: () {
+            //   if (nameValidator(_addressControllerLine1.text) == null)
+            //     FocusScope.of(context).requestFocus(_addressFocusLine2);
+            // },
+            onChanged: (addressPinCode) {
+              setState(() {
+                _addressPinCode = addressPinCode;
+              });
+            },
+            inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
+          ),
+        ),
+      ],
     );
   }
 

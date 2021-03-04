@@ -6,6 +6,7 @@ import 'package:kretaa/model/customer.dart';
 import 'package:kretaa/model/shop.dart';
 import 'package:kretaa/services/auth.dart';
 import 'package:kretaa/services/database.dart';
+import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 import 'package:provider/provider.dart';
 
 class ShopList extends StatelessWidget {
@@ -61,7 +62,7 @@ class ShopList extends StatelessWidget {
                         },
                         child: Column(
                           children: [
-                            StreamBuilder<Shop>(
+                            StreamBuilder<ShopFreezedModel>(
                                 stream: database.shopDocumentStream(
                                     shopId: customer[index]
                                         .path

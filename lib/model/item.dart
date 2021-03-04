@@ -13,7 +13,7 @@ class ItemNotifier with ChangeNotifier {
   double sgst;
   double utgst;
   double igst;
-  int quantity;
+  double quantity;
   double rateAfterGST;
   double totalAmount;
   double totalGST;
@@ -26,7 +26,7 @@ class ItemNotifier with ChangeNotifier {
     this.sgst = 0,
     this.utgst = 0,
     this.igst = 0,
-    this.quantity = 1,
+    this.quantity = 1.0,
     this.gst_percentage = 0,
     this.error,
     this.totalAmount = 0,
@@ -58,16 +58,16 @@ class ItemNotifier with ChangeNotifier {
     String name = data['name'] ?? '';
     String description = data['description'] ?? '';
     String error = data['error'] ?? null;
-    double rate = data['rate'] ?? 0;
+    double rate = data['rate'].toDouble() ?? 0.0;
     int gst_percentage = data['gst_percentage'];
-    double cgst = data['cgst'] ?? 0;
-    double sgst = data['sgst'] ?? 0;
-    double utgst = data['utgst'] ?? 0;
-    double igst = data['igst'] ?? 0;
-    double totalAmount = data['totalAmount'] ?? 0;
-    double rateAfterGST = data['rateAfterGST'] ?? 0;
-    double totalGST = data['totalGST'] ?? 0;
-    int quantity = data['quantity'];
+    double cgst = data['cgst'].toDouble() ?? 0;
+    double sgst = data['sgst'].toDouble() ?? 0;
+    double utgst = data['utgst'].toDouble() ?? 0;
+    double igst = data['igst'].toDouble() ?? 0;
+    double totalAmount = data['totalAmount'].toDouble() ?? 0;
+    double rateAfterGST = data['rateAfterGST'].toDouble() ?? 0;
+    double totalGST = data['totalGST'].toDouble() ?? 0;
+    double quantity = data['quantity'].toDouble() ?? 0;
     ItemNotifier item = ItemNotifier(
         name: name,
         rate: rate,

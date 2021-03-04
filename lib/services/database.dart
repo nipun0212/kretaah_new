@@ -14,11 +14,13 @@ import 'package:kretaa/model/setting_doc.dart';
 import 'package:kretaa/shop_admin/state/gst_state.dart';
 import 'package:kretaa/shop_admin/state/setting_model.dart';
 import 'package:kretaa/shop_admin/state/setting_state.dart';
+import 'package:kretaa/shop_admin/state/shop_freezed_model.dart';
 
 abstract class Database {
   User get loggedInUser;
-  Future<void> createShop({@required Shop shop});
-  Future<void> updateShop({@required Shop shop, @required String documentId});
+  Future<void> createShop({@required ShopFreezedModel shop});
+  Future<void> updateShop(
+      {@required ShopFreezedModel shop, @required String documentId});
   Future<void> deleteShop({@required String documentId});
   Stream<User> userStream({@required String uid});
   Stream<List<User>> usersStream({q(Query query)});
@@ -28,13 +30,16 @@ abstract class Database {
   Future<void> updateRewardSetting(
       {String shopDocumentId, SettingModel rewardSettingDoc});
 
-  Stream<List<Shop>> shopStream({q(Query query)});
-  Stream<Shop> shopDocumentStream({String shopId});
+  Stream<List<ShopFreezedModel>> shopStream({q(Query query)});
+  Stream<ShopFreezedModel> shopDocumentStream({String shopId});
   Stream<List<Bill>> billsStream(
       {q(Query query), bool collectionGroup, String shopDocumentId});
   Stream<List<BillNotifier>> billsStreamNotifier(
       {q(Query query), bool collectionGroup, String shopDocumentId});
   Stream<Bill> billStream({String billDocumentId, String shopDocumentId});
+  Stream<BillNotifier> billStreamNotifier(
+      {String billDocumentId, String shopDocumentId});
+
   Stream<List<Customer>> customerCollectionStream({q(Query query)});
   Stream<List<Customer>> customerStream(
       {q(Query query), String shopDocumentId});
@@ -78,17 +83,19 @@ class FirestoreDatabase extends Database {
   }
 
   @override
-  Future<void> createShop({@required Shop shop}) {
+  Future<void> createShop({@required ShopFreezedModel shop}) {
     print(shop.toString());
     return instance.addDocumentToCollection(
-        path: ApiPath.Shops(), data: shop.toMap());
+        path: ApiPath.Shops(), data: shop.toJson());
   }
 
   @override
-  Future<void> updateShop({@required Shop shop, @required String documentId}) {
-    print(shop);
+  Future<void> updateShop(
+      {@required ShopFreezedModel shop, @required String documentId}) {
+    print("shop.toJson()");
+    print(shop.toJson());
     return instance.updateDocument(
-        path: ApiPath.Shop(documentId), data: shop.toMap());
+        path: ApiPath.Shop(documentId), data: shop.toJson());
   }
 
   @override
@@ -97,20 +104,28 @@ class FirestoreDatabase extends Database {
   }
 
   @override
-  Stream<List<Shop>> shopStream({q(Query query)}) {
+  Stream<List<ShopFreezedModel>> shopStream({q(Query query)}) {
     return instance.collectionStream(
         path: ApiPath.Shops(),
         queryBuilder: q,
-        builder: (data, documentId, path) => Shop.fromMap(data, documentId));
+        builder: (data, documentId, path) {
+          data.update("documentId", (value) => documentId,
+              ifAbsent: () => documentId);
+          return ShopFreezedModel.fromJson(data);
+        });
   }
 
   @override
-  Stream<Shop> shopDocumentStream({String shopId}) {
+  Stream<ShopFreezedModel> shopDocumentStream({String shopId}) {
     print('shopId= $shopId');
 
     return instance.documentStream(
         path: ApiPath.Shops() + '/' + shopId,
-        builder: (data, documentId) => Shop.fromMap(data, documentId));
+        builder: (data, documentId) {
+          data.update("documentId", (value) => documentId,
+              ifAbsent: () => documentId);
+          return ShopFreezedModel.fromJson(data);
+        });
   }
 
   @override
@@ -156,6 +171,16 @@ class FirestoreDatabase extends Database {
             shopDocumentId: shopDocumentId, billId: billDocumentId),
         builder: (data, documentId) =>
             Bill.fromMap(data, documentId, 'sdcs/dsd'));
+  }
+
+  @override
+  Stream<BillNotifier> billStreamNotifier(
+      {String billDocumentId, String shopDocumentId}) {
+    return instance.documentStream(
+        path: ApiPath.Bill(
+            shopDocumentId: shopDocumentId, billId: billDocumentId),
+        builder: (data, documentId) =>
+            BillNotifier.fromMap(data, documentId, 'sdcs/dsd'));
   }
 
   @override
